@@ -1,0 +1,582 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		324F8B0A2B2B0EBE00701E40 /* LiftAnalyzerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324F8B092B2B0EBE00701E40 /* LiftAnalyzerApp.swift */; };
+		324F8B0C2B2B0EBE00701E40 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324F8B0B2B2B0EBE00701E40 /* ContentView.swift */; };
+		324F8B0E2B2B0EC000701E40 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 324F8B0D2B2B0EC000701E40 /* Assets.xcassets */; };
+		324F8B112B2B0EC000701E40 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 324F8B102B2B0EC000701E40 /* Preview Assets.xcassets */; };
+		324F8B1B2B2B0EC000701E40 /* LiftAnalyzerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324F8B1A2B2B0EC000701E40 /* LiftAnalyzerTests.swift */; };
+		324F8B252B2B0EC000701E40 /* LiftAnalyzerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324F8B242B2B0EC000701E40 /* LiftAnalyzerUITests.swift */; };
+		324F8B272B2B0EC000701E40 /* LiftAnalyzerUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324F8B262B2B0EC000701E40 /* LiftAnalyzerUITestsLaunchTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		324F8B172B2B0EC000701E40 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 324F8AFE2B2B0EBE00701E40 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 324F8B052B2B0EBE00701E40;
+			remoteInfo = LiftAnalyzer;
+		};
+		324F8B212B2B0EC000701E40 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 324F8AFE2B2B0EBE00701E40 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 324F8B052B2B0EBE00701E40;
+			remoteInfo = LiftAnalyzer;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		324F8B062B2B0EBE00701E40 /* LiftAnalyzer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiftAnalyzer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		324F8B092B2B0EBE00701E40 /* LiftAnalyzerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiftAnalyzerApp.swift; sourceTree = "<group>"; };
+		324F8B0B2B2B0EBE00701E40 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		324F8B0D2B2B0EC000701E40 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		324F8B102B2B0EC000701E40 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		324F8B162B2B0EC000701E40 /* LiftAnalyzerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LiftAnalyzerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		324F8B1A2B2B0EC000701E40 /* LiftAnalyzerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiftAnalyzerTests.swift; sourceTree = "<group>"; };
+		324F8B202B2B0EC000701E40 /* LiftAnalyzerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LiftAnalyzerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		324F8B242B2B0EC000701E40 /* LiftAnalyzerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiftAnalyzerUITests.swift; sourceTree = "<group>"; };
+		324F8B262B2B0EC000701E40 /* LiftAnalyzerUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiftAnalyzerUITestsLaunchTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		324F8B032B2B0EBE00701E40 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		324F8B132B2B0EC000701E40 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		324F8B1D2B2B0EC000701E40 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		324F8AFD2B2B0EBE00701E40 = {
+			isa = PBXGroup;
+			children = (
+				324F8B082B2B0EBE00701E40 /* LiftAnalyzer */,
+				324F8B192B2B0EC000701E40 /* LiftAnalyzerTests */,
+				324F8B232B2B0EC000701E40 /* LiftAnalyzerUITests */,
+				324F8B072B2B0EBE00701E40 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		324F8B072B2B0EBE00701E40 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				324F8B062B2B0EBE00701E40 /* LiftAnalyzer.app */,
+				324F8B162B2B0EC000701E40 /* LiftAnalyzerTests.xctest */,
+				324F8B202B2B0EC000701E40 /* LiftAnalyzerUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		324F8B082B2B0EBE00701E40 /* LiftAnalyzer */ = {
+			isa = PBXGroup;
+			children = (
+				324F8B092B2B0EBE00701E40 /* LiftAnalyzerApp.swift */,
+				324F8B0B2B2B0EBE00701E40 /* ContentView.swift */,
+				324F8B0D2B2B0EC000701E40 /* Assets.xcassets */,
+				324F8B0F2B2B0EC000701E40 /* Preview Content */,
+			);
+			path = LiftAnalyzer;
+			sourceTree = "<group>";
+		};
+		324F8B0F2B2B0EC000701E40 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				324F8B102B2B0EC000701E40 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		324F8B192B2B0EC000701E40 /* LiftAnalyzerTests */ = {
+			isa = PBXGroup;
+			children = (
+				324F8B1A2B2B0EC000701E40 /* LiftAnalyzerTests.swift */,
+			);
+			path = LiftAnalyzerTests;
+			sourceTree = "<group>";
+		};
+		324F8B232B2B0EC000701E40 /* LiftAnalyzerUITests */ = {
+			isa = PBXGroup;
+			children = (
+				324F8B242B2B0EC000701E40 /* LiftAnalyzerUITests.swift */,
+				324F8B262B2B0EC000701E40 /* LiftAnalyzerUITestsLaunchTests.swift */,
+			);
+			path = LiftAnalyzerUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		324F8B052B2B0EBE00701E40 /* LiftAnalyzer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 324F8B2A2B2B0EC000701E40 /* Build configuration list for PBXNativeTarget "LiftAnalyzer" */;
+			buildPhases = (
+				324F8B022B2B0EBE00701E40 /* Sources */,
+				324F8B032B2B0EBE00701E40 /* Frameworks */,
+				324F8B042B2B0EBE00701E40 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LiftAnalyzer;
+			productName = LiftAnalyzer;
+			productReference = 324F8B062B2B0EBE00701E40 /* LiftAnalyzer.app */;
+			productType = "com.apple.product-type.application";
+		};
+		324F8B152B2B0EC000701E40 /* LiftAnalyzerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 324F8B2D2B2B0EC000701E40 /* Build configuration list for PBXNativeTarget "LiftAnalyzerTests" */;
+			buildPhases = (
+				324F8B122B2B0EC000701E40 /* Sources */,
+				324F8B132B2B0EC000701E40 /* Frameworks */,
+				324F8B142B2B0EC000701E40 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				324F8B182B2B0EC000701E40 /* PBXTargetDependency */,
+			);
+			name = LiftAnalyzerTests;
+			productName = LiftAnalyzerTests;
+			productReference = 324F8B162B2B0EC000701E40 /* LiftAnalyzerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		324F8B1F2B2B0EC000701E40 /* LiftAnalyzerUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 324F8B302B2B0EC000701E40 /* Build configuration list for PBXNativeTarget "LiftAnalyzerUITests" */;
+			buildPhases = (
+				324F8B1C2B2B0EC000701E40 /* Sources */,
+				324F8B1D2B2B0EC000701E40 /* Frameworks */,
+				324F8B1E2B2B0EC000701E40 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				324F8B222B2B0EC000701E40 /* PBXTargetDependency */,
+			);
+			name = LiftAnalyzerUITests;
+			productName = LiftAnalyzerUITests;
+			productReference = 324F8B202B2B0EC000701E40 /* LiftAnalyzerUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		324F8AFE2B2B0EBE00701E40 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1430;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					324F8B052B2B0EBE00701E40 = {
+						CreatedOnToolsVersion = 14.3.1;
+					};
+					324F8B152B2B0EC000701E40 = {
+						CreatedOnToolsVersion = 14.3.1;
+						TestTargetID = 324F8B052B2B0EBE00701E40;
+					};
+					324F8B1F2B2B0EC000701E40 = {
+						CreatedOnToolsVersion = 14.3.1;
+						TestTargetID = 324F8B052B2B0EBE00701E40;
+					};
+				};
+			};
+			buildConfigurationList = 324F8B012B2B0EBE00701E40 /* Build configuration list for PBXProject "LiftAnalyzer" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 324F8AFD2B2B0EBE00701E40;
+			productRefGroup = 324F8B072B2B0EBE00701E40 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				324F8B052B2B0EBE00701E40 /* LiftAnalyzer */,
+				324F8B152B2B0EC000701E40 /* LiftAnalyzerTests */,
+				324F8B1F2B2B0EC000701E40 /* LiftAnalyzerUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		324F8B042B2B0EBE00701E40 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				324F8B112B2B0EC000701E40 /* Preview Assets.xcassets in Resources */,
+				324F8B0E2B2B0EC000701E40 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		324F8B142B2B0EC000701E40 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		324F8B1E2B2B0EC000701E40 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		324F8B022B2B0EBE00701E40 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				324F8B0C2B2B0EBE00701E40 /* ContentView.swift in Sources */,
+				324F8B0A2B2B0EBE00701E40 /* LiftAnalyzerApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		324F8B122B2B0EC000701E40 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				324F8B1B2B2B0EC000701E40 /* LiftAnalyzerTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		324F8B1C2B2B0EC000701E40 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				324F8B252B2B0EC000701E40 /* LiftAnalyzerUITests.swift in Sources */,
+				324F8B272B2B0EC000701E40 /* LiftAnalyzerUITestsLaunchTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		324F8B182B2B0EC000701E40 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 324F8B052B2B0EBE00701E40 /* LiftAnalyzer */;
+			targetProxy = 324F8B172B2B0EC000701E40 /* PBXContainerItemProxy */;
+		};
+		324F8B222B2B0EC000701E40 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 324F8B052B2B0EBE00701E40 /* LiftAnalyzer */;
+			targetProxy = 324F8B212B2B0EC000701E40 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		324F8B282B2B0EC000701E40 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		324F8B292B2B0EC000701E40 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		324F8B2B2B2B0EC000701E40 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"LiftAnalyzer/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Rohit-Katakam.LiftAnalyzer";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		324F8B2C2B2B0EC000701E40 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"LiftAnalyzer/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Rohit-Katakam.LiftAnalyzer";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		324F8B2E2B2B0EC000701E40 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Rohit-Katakam.LiftAnalyzerTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LiftAnalyzer.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/LiftAnalyzer";
+			};
+			name = Debug;
+		};
+		324F8B2F2B2B0EC000701E40 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Rohit-Katakam.LiftAnalyzerTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LiftAnalyzer.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/LiftAnalyzer";
+			};
+			name = Release;
+		};
+		324F8B312B2B0EC000701E40 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Rohit-Katakam.LiftAnalyzerUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = LiftAnalyzer;
+			};
+			name = Debug;
+		};
+		324F8B322B2B0EC000701E40 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Rohit-Katakam.LiftAnalyzerUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = LiftAnalyzer;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		324F8B012B2B0EBE00701E40 /* Build configuration list for PBXProject "LiftAnalyzer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				324F8B282B2B0EC000701E40 /* Debug */,
+				324F8B292B2B0EC000701E40 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		324F8B2A2B2B0EC000701E40 /* Build configuration list for PBXNativeTarget "LiftAnalyzer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				324F8B2B2B2B0EC000701E40 /* Debug */,
+				324F8B2C2B2B0EC000701E40 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		324F8B2D2B2B0EC000701E40 /* Build configuration list for PBXNativeTarget "LiftAnalyzerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				324F8B2E2B2B0EC000701E40 /* Debug */,
+				324F8B2F2B2B0EC000701E40 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		324F8B302B2B0EC000701E40 /* Build configuration list for PBXNativeTarget "LiftAnalyzerUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				324F8B312B2B0EC000701E40 /* Debug */,
+				324F8B322B2B0EC000701E40 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 324F8AFE2B2B0EBE00701E40 /* Project object */;
+}
