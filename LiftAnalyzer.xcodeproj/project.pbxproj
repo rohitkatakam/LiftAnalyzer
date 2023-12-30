@@ -8,12 +8,20 @@
 
 /* Begin PBXBuildFile section */
 		324F8B0A2B2B0EBE00701E40 /* LiftAnalyzerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324F8B092B2B0EBE00701E40 /* LiftAnalyzerApp.swift */; };
-		324F8B0C2B2B0EBE00701E40 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324F8B0B2B2B0EBE00701E40 /* ContentView.swift */; };
+		324F8B0C2B2B0EBE00701E40 /* HomepageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324F8B0B2B2B0EBE00701E40 /* HomepageView.swift */; };
 		324F8B0E2B2B0EC000701E40 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 324F8B0D2B2B0EC000701E40 /* Assets.xcassets */; };
 		324F8B112B2B0EC000701E40 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 324F8B102B2B0EC000701E40 /* Preview Assets.xcassets */; };
 		324F8B1B2B2B0EC000701E40 /* LiftAnalyzerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324F8B1A2B2B0EC000701E40 /* LiftAnalyzerTests.swift */; };
 		324F8B252B2B0EC000701E40 /* LiftAnalyzerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324F8B242B2B0EC000701E40 /* LiftAnalyzerUITests.swift */; };
 		324F8B272B2B0EC000701E40 /* LiftAnalyzerUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324F8B262B2B0EC000701E40 /* LiftAnalyzerUITestsLaunchTests.swift */; };
+		32A093302B301DF50014BAEE /* LiftView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A0932F2B301DF50014BAEE /* LiftView.swift */; };
+		32A093322B301FDA0014BAEE /* SplitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A093312B301FDA0014BAEE /* SplitView.swift */; };
+		32A093362B304DC20014BAEE /* WorkoutDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A093352B304DC20014BAEE /* WorkoutDataManager.swift */; };
+		32A093392B3059110014BAEE /* WorkoutListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A093382B3059110014BAEE /* WorkoutListView.swift */; };
+		32A0933B2B316E190014BAEE /* SplitListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A0933A2B316E190014BAEE /* SplitListView.swift */; };
+		32A0933D2B3172400014BAEE /* SplitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A0933C2B3172400014BAEE /* SplitManager.swift */; };
+		32A0933F2B3175780014BAEE /* AddSplitAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A0933E2B3175780014BAEE /* AddSplitAlert.swift */; };
+		32A093412B31A2330014BAEE /* SplitDropDownMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A093402B31A2330014BAEE /* SplitDropDownMenu.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,7 +44,7 @@
 /* Begin PBXFileReference section */
 		324F8B062B2B0EBE00701E40 /* LiftAnalyzer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiftAnalyzer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		324F8B092B2B0EBE00701E40 /* LiftAnalyzerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiftAnalyzerApp.swift; sourceTree = "<group>"; };
-		324F8B0B2B2B0EBE00701E40 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		324F8B0B2B2B0EBE00701E40 /* HomepageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomepageView.swift; sourceTree = "<group>"; };
 		324F8B0D2B2B0EC000701E40 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		324F8B102B2B0EC000701E40 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		324F8B162B2B0EC000701E40 /* LiftAnalyzerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LiftAnalyzerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -44,6 +52,16 @@
 		324F8B202B2B0EC000701E40 /* LiftAnalyzerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LiftAnalyzerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		324F8B242B2B0EC000701E40 /* LiftAnalyzerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiftAnalyzerUITests.swift; sourceTree = "<group>"; };
 		324F8B262B2B0EC000701E40 /* LiftAnalyzerUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiftAnalyzerUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		324F8B332B2B113700701E40 /* LiftAnalyzer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LiftAnalyzer.entitlements; sourceTree = "<group>"; };
+		32A0932F2B301DF50014BAEE /* LiftView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiftView.swift; sourceTree = "<group>"; };
+		32A093312B301FDA0014BAEE /* SplitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitView.swift; sourceTree = "<group>"; };
+		32A093352B304DC20014BAEE /* WorkoutDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutDataManager.swift; sourceTree = "<group>"; };
+		32A093372B3052F70014BAEE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		32A093382B3059110014BAEE /* WorkoutListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutListView.swift; sourceTree = "<group>"; };
+		32A0933A2B316E190014BAEE /* SplitListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitListView.swift; sourceTree = "<group>"; };
+		32A0933C2B3172400014BAEE /* SplitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitManager.swift; sourceTree = "<group>"; };
+		32A0933E2B3175780014BAEE /* AddSplitAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddSplitAlert.swift; sourceTree = "<group>"; };
+		32A093402B31A2330014BAEE /* SplitDropDownMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitDropDownMenu.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,8 +112,18 @@
 		324F8B082B2B0EBE00701E40 /* LiftAnalyzer */ = {
 			isa = PBXGroup;
 			children = (
+				32A093372B3052F70014BAEE /* Info.plist */,
+				324F8B332B2B113700701E40 /* LiftAnalyzer.entitlements */,
 				324F8B092B2B0EBE00701E40 /* LiftAnalyzerApp.swift */,
-				324F8B0B2B2B0EBE00701E40 /* ContentView.swift */,
+				32A0933E2B3175780014BAEE /* AddSplitAlert.swift */,
+				324F8B0B2B2B0EBE00701E40 /* HomepageView.swift */,
+				32A093382B3059110014BAEE /* WorkoutListView.swift */,
+				32A0932F2B301DF50014BAEE /* LiftView.swift */,
+				32A093312B301FDA0014BAEE /* SplitView.swift */,
+				32A0933C2B3172400014BAEE /* SplitManager.swift */,
+				32A093352B304DC20014BAEE /* WorkoutDataManager.swift */,
+				32A0933A2B316E190014BAEE /* SplitListView.swift */,
+				32A093402B31A2330014BAEE /* SplitDropDownMenu.swift */,
 				324F8B0D2B2B0EC000701E40 /* Assets.xcassets */,
 				324F8B0F2B2B0EC000701E40 /* Preview Content */,
 			);
@@ -191,7 +219,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1430;
-				LastUpgradeCheck = 1430;
+				LastUpgradeCheck = 1510;
 				TargetAttributes = {
 					324F8B052B2B0EBE00701E40 = {
 						CreatedOnToolsVersion = 14.3.1;
@@ -257,7 +285,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				324F8B0C2B2B0EBE00701E40 /* ContentView.swift in Sources */,
+				32A093362B304DC20014BAEE /* WorkoutDataManager.swift in Sources */,
+				324F8B0C2B2B0EBE00701E40 /* HomepageView.swift in Sources */,
+				32A093392B3059110014BAEE /* WorkoutListView.swift in Sources */,
+				32A093322B301FDA0014BAEE /* SplitView.swift in Sources */,
+				32A0933D2B3172400014BAEE /* SplitManager.swift in Sources */,
+				32A0933F2B3175780014BAEE /* AddSplitAlert.swift in Sources */,
+				32A0933B2B316E190014BAEE /* SplitListView.swift in Sources */,
+				32A093302B301DF50014BAEE /* LiftView.swift in Sources */,
+				32A093412B31A2330014BAEE /* SplitDropDownMenu.swift in Sources */,
 				324F8B0A2B2B0EBE00701E40 /* LiftAnalyzerApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -331,6 +367,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -391,6 +428,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -414,11 +452,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = LiftAnalyzer/LiftAnalyzer.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"LiftAnalyzer/Preview Content\"";
+				DEVELOPMENT_TEAM = 48CY8DSA6K;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LiftAnalyzer/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "We need access to your workout data.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -442,11 +485,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = LiftAnalyzer/LiftAnalyzer.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"LiftAnalyzer/Preview Content\"";
+				DEVELOPMENT_TEAM = 48CY8DSA6K;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LiftAnalyzer/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "We need access to your workout data.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
