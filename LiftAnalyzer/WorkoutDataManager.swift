@@ -16,10 +16,12 @@ struct WorkoutData {
 
 class WorkoutDataManager: ObservableObject {
     private var healthStore: HKHealthStore?
+    private var splitManager: SplitManager?
     @Published var workouts: [WorkoutData] = []
     private var cancellables = Set<AnyCancellable>()
     
-    init() {
+    init(splitManager: SplitManager) {
+        self.splitManager = splitManager
         if HKHealthStore.isHealthDataAvailable() {
             healthStore = HKHealthStore()
             // Request authorization and fetch initial data
@@ -60,6 +62,9 @@ class WorkoutDataManager: ObservableObject {
                 guard let self = self else { return }
                 if let fetchedWorkouts = samples as? [HKWorkout] {
                     self.workouts = fetchedWorkouts.map { WorkoutData(split: nil, workout: $0) }
+                    if let splitManager = self.splitManager {
+                        self.updateWorkoutSplits(from: splitManager)
+                    }
                 }
             }
         }
@@ -67,6 +72,32 @@ class WorkoutDataManager: ObservableObject {
         healthStore?.execute(query)
     }
 
+    func fetchAverageHeartRate(for workout: HKWorkout, completion: @escaping (Double) -> Void) {
+        guard let heartRateType = HKQuantityType.quantityType(forIdentifier: .heartRate) else {
+            completion(0)
+            return
+        }
+
+        let predicate = HKQuery.predicateForSamples(withStart: workout.startDate, end: workout.endDate, options: .strictStartDate)
+        let query = HKStatisticsQuery(quantityType: heartRateType, quantitySamplePredicate: predicate, options: .discreteAverage) { _, statistics, _ in
+            DispatchQueue.main.async {
+                let averageHeartRate = statistics?.averageQuantity()?.doubleValue(for: HKUnit(from: "count/min")) ?? 0
+                completion(averageHeartRate)
+            }
+        }
+
+        healthStore?.execute(query)
+    }
+    
+    func updateWorkoutSplits(from splitManager: SplitManager) {
+        for (splitName, storedWorkouts) in splitManager.splits {
+            for storedWorkout in storedWorkouts {
+                if let index = workouts.firstIndex(where: { $0.workout.startDate == storedWorkout.startDate }) {
+                    workouts[index].split = splitName
+                }
+            }
+        }
+    }
 
     deinit {
         cancellables.forEach { $0.cancel() }

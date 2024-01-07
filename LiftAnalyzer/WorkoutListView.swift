@@ -34,10 +34,5 @@ private let itemFormatter: DateFormatter = {
     return formatter
 }()
 
-struct WorkoutListView_Previews: PreviewProvider {
-    static var previews: some View {
-        WorkoutListView().environmentObject(WorkoutDataManager())
-    }
-}
 
 

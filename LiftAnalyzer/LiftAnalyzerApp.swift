@@ -9,14 +9,18 @@ import SwiftUI
 
 @main
 struct LiftAnalyzerApp: App {
-    @StateObject var workoutDataManager = WorkoutDataManager()
-    @StateObject var splitManager = SplitManager()
+    var splitManager = SplitManager()
+    var workoutDataManager: WorkoutDataManager
+
+    init() {
+        workoutDataManager = WorkoutDataManager(splitManager: splitManager)
+    }
 
     var body: some Scene {
         WindowGroup {
             HomepageView()
-                .environmentObject(workoutDataManager)
                 .environmentObject(splitManager)
+                .environmentObject(workoutDataManager)
         }
     }
 }

@@ -10,7 +10,13 @@ import HealthKit
 
 struct StoredWorkout: Codable {
     let startDate: Date
+    let duration: TimeInterval
+    let totalEnergyBurned: Double
+    let totalDistance: Double
+    let averageHeartRate: Double
 }
+
+
 
 struct StoredSplit: Codable {
     var name: String
@@ -18,37 +24,59 @@ struct StoredSplit: Codable {
 }
 
 class SplitManager: ObservableObject {
-    @Published var splits: [String: [HKWorkout]] = [:] {
+    @Published var splits: [String: [StoredWorkout]] = [:] {
         didSet {
             saveSplits()
         }
     }
-    @Published var workoutData: [WorkoutData] = []
     
     init() {
         loadSplits()
     }
 
     private func saveSplits() {
-        let storedSplits = splits.map { (key, value) -> StoredSplit in
-            let storedWorkouts = value.map { StoredWorkout(startDate: $0.startDate) }
-            return StoredSplit(name: key, workouts: storedWorkouts)
-        }
-
-        if let encoded = try? JSONEncoder().encode(storedSplits) {
+        if let encoded = try? JSONEncoder().encode(splits) {
             UserDefaults.standard.set(encoded, forKey: "storedSplits")
         }
     }
     
     //THIS IS VERY INCORRECT!!!!
+    // splits still delete after closing app
     
     private func loadSplits() {
         if let storedSplitsData = UserDefaults.standard.data(forKey: "storedSplits"),
-           let storedSplits = try? JSONDecoder().decode([StoredSplit].self, from: storedSplitsData) {
-            self.splits = Dictionary(uniqueKeysWithValues: storedSplits.map { ($0.name, $0.workouts.map { HKWorkout(activityType: .traditionalStrengthTraining, start: $0.startDate, end: $0.startDate) }) })
+           let decodedSplits = try? JSONDecoder().decode([String: [StoredWorkout]].self, from: storedSplitsData) {
+            self.splits = decodedSplits
         }
     }
+
     
+    private func queryHealthKitForWorkout(healthStore: HKHealthStore, startDate: Date, uuidString: String, completion: @escaping (HKWorkout?) -> Void) {
+        guard let uuid = UUID(uuidString: uuidString) else {
+                completion(nil)
+                return
+            }
+
+            let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
+                HKQuery.predicateForSamples(withStart: startDate, end: startDate, options: .strictStartDate),
+                HKQuery.predicateForObject(with: uuid)
+            ])
+        let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
+        
+        let query = HKSampleQuery(sampleType: .workoutType(), predicate: predicate, limit: 1, sortDescriptors: [sortDescriptor]) { _, samples, _ in
+            DispatchQueue.main.async {
+                if let workouts = samples as? [HKWorkout], !workouts.isEmpty {
+                    completion(workouts.first)
+                } else {
+                    completion(nil)
+                }
+            }
+        }
+
+        healthStore.execute(query)
+    }
+
+
     // Function to add a new split with an empty workout array
     func addSplit(named name: String) {
         splits[name] = []
@@ -60,27 +88,41 @@ class SplitManager: ObservableObject {
     }
     
     func updateWorkoutSplit(workout: HKWorkout, newSplit: String?, workoutDataManager: WorkoutDataManager) {
-        // Find and update the split in the workout data
-        if let index = workoutDataManager.workouts.firstIndex(where: { $0.workout == workout }) {
-            workoutDataManager.workouts[index].split = newSplit
-        }
+        // Asynchronously fetch the average heart rate
+        workoutDataManager.fetchAverageHeartRate(for: workout) { [weak self] averageHeartRate in
+            guard let self = self else { return }
 
-        // Update the splits dictionary
-        updateSplitsDictionary(workout: workout, newSplit: newSplit)
+            // Create the StoredWorkout with the fetched heart rate
+            let storedWorkout = StoredWorkout(
+                startDate: workout.startDate,
+                duration: workout.duration,
+                totalEnergyBurned: workout.totalEnergyBurned?.doubleValue(for: .kilocalorie()) ?? 0,
+                totalDistance: workout.totalDistance?.doubleValue(for: .meter()) ?? 0,
+                averageHeartRate: averageHeartRate
+            )
+
+            // Update splits dictionary in a thread-safe way
+            DispatchQueue.main.async {
+                self.updateSplitsDictionary(storedWorkout: storedWorkout, newSplit: newSplit, workoutDataManager: workoutDataManager)
+            }
+        }
     }
-    
-    private func updateSplitsDictionary(workout: HKWorkout, newSplit: String?) {
-            // Remove workout from its current split
-            for (split, _) in splits {
-                if let idx = splits[split]?.firstIndex(of: workout) {
-                    splits[split]?.remove(at: idx)
-                    break
-                }
-            }
 
-            // Add workout to the new split, if provided
-            if let newSplit = newSplit {
-                splits[newSplit, default: []].append(workout)
+    private func updateSplitsDictionary(storedWorkout: StoredWorkout, newSplit: String?, workoutDataManager: WorkoutDataManager) {
+        // Remove the workout from its current split
+        for (split, workoutArray) in splits {
+            if let idx = workoutArray.firstIndex(where: { $0.startDate == storedWorkout.startDate }) {
+                splits[split]?.remove(at: idx)
+                break
             }
         }
+
+        // Add the workout to the new split, if provided
+        if let newSplit = newSplit {
+            splits[newSplit, default: []].append(storedWorkout)
+        }
+        workoutDataManager.updateWorkoutSplits(from: self)
+    }
+
+
 }
