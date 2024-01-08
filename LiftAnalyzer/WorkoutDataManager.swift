@@ -40,16 +40,23 @@ class WorkoutDataManager: ObservableObject {
 
     private func requestAuthorization() {
         // Define the health data types for read access
-        let typesToRead: Set<HKObjectType> = [HKObjectType.workoutType()]
+        guard let heartRateType = HKQuantityType.quantityType(forIdentifier: .heartRate) else {
+            // Handle the error if the heart rate type is not available
+            return
+        }
+
+        let typesToRead: Set<HKObjectType> = [HKObjectType.workoutType(), heartRateType]
 
         healthStore?.requestAuthorization(toShare: nil, read: typesToRead) { success, error in
             if success {
                 self.fetchWorkouts()
             } else {
                 // Handle errors
+                print("Authorization failed with error: \(error?.localizedDescription ?? "Unknown error")")
             }
         }
     }
+
 
     private func fetchWorkouts() {
         // Replace 'functionalStrengthTraining' with the appropriate type if available

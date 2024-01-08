@@ -40,8 +40,6 @@ class SplitManager: ObservableObject {
         }
     }
     
-    //THIS IS VERY INCORRECT!!!!
-    // splits still delete after closing app
     
     private func loadSplits() {
         if let storedSplitsData = UserDefaults.standard.data(forKey: "storedSplits"),

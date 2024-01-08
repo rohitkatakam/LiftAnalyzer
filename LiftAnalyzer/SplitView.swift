@@ -12,7 +12,31 @@ struct SplitView: View {
     @EnvironmentObject var splitManager: SplitManager
     var splitName: String
     var workouts: [StoredWorkout]
+
+    // Calculate average duration
+    private func averageDuration() -> TimeInterval {
+        let totalDuration = workouts.reduce(0) { $0 + $1.duration }
+        return workouts.isEmpty ? 0 : totalDuration / Double(workouts.count)
+    }
+
+    // Calculate average energy burned
+    private func averageEnergyBurned() -> Double {
+        let totalEnergyBurned = workouts.reduce(0) { $0 + $1.totalEnergyBurned }
+        return workouts.isEmpty ? 0 : totalEnergyBurned / Double(workouts.count)
+    }
+
+    // Calculate average heart rate
+    private func averageHeartRate() -> Double {
+        let totalHeartRate = workouts.reduce(0) { $0 + $1.averageHeartRate }
+        return workouts.isEmpty ? 0 : totalHeartRate / Double(workouts.count)
+    }
     
+    // Calculate # of workouts in the past month
+    private func workoutsInPastMonth() -> Int {
+        let oneMonthAgo = Calendar.current.date(byAdding: .month, value: -1, to: Date()) ?? Date()
+        return workouts.filter { $0.startDate >= oneMonthAgo }.count
+    }
+
     var body: some View {
         VStack(alignment: .leading) {
             Text("\(splitName)")
@@ -20,10 +44,18 @@ struct SplitView: View {
                 .fontWeight(.semibold)
                 .padding([.leading])
 
+            // Display averages
+            if !workouts.isEmpty {
+                Text("Average Duration: \(averageDuration()) seconds")
+                Text("Average Energy Burned: \(averageEnergyBurned()) kcal")
+                Text("Average Heart Rate: \(averageHeartRate()) bpm")
+                Text("Number of workouts in the past month: \(workoutsInPastMonth())")
+            }
+
             List(workouts, id: \.startDate) { workout in
                 Text("Workout on \(workout.startDate, formatter: itemFormatter)")
-                // Display additional workout information as needed
             }
+
             Button("Delete Split") {
                 splitManager.deleteSplit(named: splitName)
             }
@@ -39,7 +71,6 @@ private let itemFormatter: DateFormatter = {
     formatter.timeStyle = .medium
     return formatter
 }()
-
 
 struct SplitView_Previews : PreviewProvider {
     static let mockStoredWorkout = StoredWorkout(
