@@ -16,26 +16,29 @@ struct LiftView: View {
     @State private var averageHeartRate: Double?
 
     var body: some View {
-        VStack {
+        VStack(alignment: .leading) {
+            Text("\(headingFormatter.string(from: workoutData.workout.startDate))")
+                .font(.largeTitle)
+                .fontWeight(.semibold)
+                .multilineTextAlignment(.leading)
             HStack {
-                Text(workoutData.split ?? "NO SPLIT")
+                Text(workoutData.split ?? "NO SPLIT").font(.headline).bold()
                 Button(action: { showDropDown.toggle() }) {
-                    Image(systemName: "arrowtriangle.down.circle")
+                    Image(systemName: "pencil")
                 }
                 .popover(isPresented: $showDropDown, arrowEdge: .top) {
                     SplitDropDownMenu(workoutData: $workoutData, showDropDown: $showDropDown)
                 }
             }
-            VStack {
-                Text("Start Date: \(workoutData.workout.startDate, formatter: itemFormatter)")
-                Text("Duration: \(workoutData.workout.duration) seconds")
-                Text("Energy Burned: \(workoutData.workout.totalEnergyBurned?.doubleValue(for: .kilocalorie()) ?? 0) kcal")
-                if let heartRate = averageHeartRate {
-                    Text("Average Heart Rate: \(heartRate) bpm")
-                } else {
-                    Text("Fetching heart rate...")
-                }
+            Text("Start Date: \(workoutData.workout.startDate, formatter: itemFormatter)")
+            Text("Duration: \(workoutData.workout.duration) seconds")
+            Text("Energy Burned: \(workoutData.workout.totalEnergyBurned?.doubleValue(for: .kilocalorie()) ?? 0) kcal")
+            if let heartRate = averageHeartRate {
+                Text("Average Heart Rate: \(heartRate) bpm")
+            } else {
+                Text("Fetching heart rate...")
             }
+            Spacer()
         }
         .onAppear {
             fetchHeartRate()
@@ -55,6 +58,13 @@ private let itemFormatter: DateFormatter = {
     formatter.timeStyle = .medium
     return formatter
 }()
+
+private let headingFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "MMM d"
+    return formatter
+}()
+
 
 // LiftView_Previews remains the same
 

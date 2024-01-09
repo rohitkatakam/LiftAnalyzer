@@ -13,21 +13,26 @@ struct SplitListView: View {
     @State private var showingAddSplitSheet = false
 
     var body: some View {
-        List {
-            ForEach(Array(splitManager.splits.keys), id: \.self) { split in
-                NavigationLink(destination: SplitView(splitName: split, workouts: splitManager.splits[split] ?? [])) {
-                    Text(split)
+        VStack(alignment: .leading) {
+            Text("Splits")
+                .font(.largeTitle)
+                .fontWeight(.semibold)
+                .padding([.leading])
+            List {
+                ForEach(Array(splitManager.splits.keys), id: \.self) { split in
+                    NavigationLink(destination: SplitView(splitName: split, workouts: splitManager.splits[split] ?? [])) {
+                        Text(split)
+                    }
                 }
             }
-        }
-        .navigationBarItems(trailing: Button(action: {
-            self.showingAddSplitSheet = true
-        }) {
-            Image(systemName: "plus")
-        })
-        .navigationBarTitle("Splits")
-        .sheet(isPresented: $showingAddSplitSheet) {
-            AddSplitView(isPresented: self.$showingAddSplitSheet, splitManager: self.splitManager)
+            .navigationBarItems(trailing: Button(action: {
+                self.showingAddSplitSheet = true
+            }) {
+                Image(systemName: "plus")
+            })
+            .sheet(isPresented: $showingAddSplitSheet) {
+                AddSplitView(isPresented: self.$showingAddSplitSheet, splitManager: self.splitManager)
+            }
         }
     }
 }
