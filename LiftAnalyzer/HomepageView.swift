@@ -32,7 +32,7 @@ struct HomepageView: View {
                             }
                         }
 
-                        HStack {
+                        HStack(spacing: 2) {
                             sectionHeader("Splits")
                             plusButton
                         }

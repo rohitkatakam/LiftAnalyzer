@@ -21,10 +21,6 @@ struct SplitDropDownMenu: View {
                     updateSplit(split)
                 }
             }
-            Button("Create New Split") {
-                // Logic to create a new split
-                // Possibly trigger AddSplitAlert
-            }
             Button("Clear Split") {
                 updateSplit(nil)
             }

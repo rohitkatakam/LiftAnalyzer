@@ -16,13 +16,43 @@ struct LiftView: View {
     @State private var averageHeartRate: Double?
 
     var body: some View {
+        ScrollView {
+            VStack(alignment: .leading) {
+                Text("\(headingFormatter.string(from: workoutData.workout.startDate))")
+                    .font(.largeTitle)
+                    .fontWeight(.semibold)
+
+                SplitInfoSquare(workoutData: $workoutData, showDropDown: $showDropDown)
+                InfoSquare(title: "Energy Burned", value: "\(Int(workoutData.workout.totalEnergyBurned?.doubleValue(for: .kilocalorie()).rounded() ?? 0)) kcal")
+                InfoSquare(title: "Duration", value: formatDuration(Int(workoutData.workout.duration.rounded())))
+                InfoSquare(title: "Heart Rate", value: averageHeartRate != nil ? "\(Int(averageHeartRate!.rounded())) bpm" : "Fetching...")
+            }
+            .padding([.leading, .trailing])
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .onAppear {
+                fetchHeartRate()
+            }
+        }
+        }
+
+    private func fetchHeartRate() {
+        workoutDataManager.fetchAverageHeartRate(for: workoutData.workout) { heartRate in
+            self.averageHeartRate = heartRate
+        }
+    }
+}
+
+private struct SplitInfoSquare: View {
+    @Binding var workoutData: WorkoutData
+    @Binding var showDropDown: Bool
+
+    var body: some View {
         VStack(alignment: .leading) {
-            Text("\(headingFormatter.string(from: workoutData.workout.startDate))")
-                .font(.largeTitle)
-                .fontWeight(.semibold)
-                .multilineTextAlignment(.leading)
             HStack {
-                Text(workoutData.split ?? "NO SPLIT").font(.headline).bold()
+                Text("Split")
+                    .font(.title)
+                    .fontWeight(.heavy)
+                    .foregroundColor(.gray)
                 Button(action: { showDropDown.toggle() }) {
                     Image(systemName: "pencil")
                 }
@@ -30,25 +60,33 @@ struct LiftView: View {
                     SplitDropDownMenu(workoutData: $workoutData, showDropDown: $showDropDown)
                 }
             }
-            Text("Start Date: \(workoutData.workout.startDate, formatter: itemFormatter)")
-            Text("Duration: \(workoutData.workout.duration) seconds")
-            Text("Energy Burned: \(workoutData.workout.totalEnergyBurned?.doubleValue(for: .kilocalorie()) ?? 0) kcal")
-            if let heartRate = averageHeartRate {
-                Text("Average Heart Rate: \(heartRate) bpm")
-            } else {
-                Text("Fetching heart rate...")
-            }
-            Spacer()
+            Text(workoutData.split ?? "NO SPLIT")
+                .font(.title2)
+                .fontWeight(.medium)
         }
-        .onAppear {
-            fetchHeartRate()
-        }
+        .padding()
+        .background(Color.gray.opacity(0.2))
+        .cornerRadius(10)
     }
+}
 
-    private func fetchHeartRate() {
-        workoutDataManager.fetchAverageHeartRate(for: workoutData.workout) { heartRate in
-            self.averageHeartRate = heartRate
+private struct InfoSquare: View {
+    var title: String
+    var value: String
+
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text(title)
+                .font(.title)
+                .fontWeight(.heavy)
+                .foregroundColor(.gray)
+            Text(value)
+                .font(.title2)
+                .fontWeight(.medium)
         }
+        .padding()
+        .background(Color.gray.opacity(0.2))
+        .cornerRadius(10)
     }
 }
 
@@ -65,6 +103,23 @@ private let headingFormatter: DateFormatter = {
     return formatter
 }()
 
+func formatDuration(_ totalSeconds: Int) -> String {
+    let hours = totalSeconds / 3600
+    let minutes = (totalSeconds % 3600) / 60
+
+    var formattedString = ""
+    if hours > 0 {
+        formattedString += "\(hours) hour" + (hours > 1 ? "s" : "")
+    }
+    if minutes > 0 {
+        if !formattedString.isEmpty {
+            formattedString += " "
+        }
+        formattedString += "\(minutes) minute" + (minutes > 1 ? "s" : "")
+    }
+    return formattedString.isEmpty ? "0 minutes" : formattedString
+}
+
 
 // LiftView_Previews remains the same
 
@@ -76,4 +131,3 @@ struct LiftView_Previews: PreviewProvider {
         LiftView(workoutData: $mockWorkoutData)
     }
 }
-

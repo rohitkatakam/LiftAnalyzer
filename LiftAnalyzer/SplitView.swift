@@ -12,6 +12,8 @@ struct SplitView: View {
     @EnvironmentObject var splitManager: SplitManager
     var splitName: String
     var workouts: [StoredWorkout]
+    @State private var selectedTimeframe = "one month"
+    private let timeframes = ["one week", "one month", "three months", "six months", "one year", "all time"]
 
     // Calculate average duration
     private func averageDuration() -> TimeInterval {
@@ -38,29 +40,51 @@ struct SplitView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading) {
-            Text("\(splitName)")
-                .font(.largeTitle)
-                .fontWeight(.semibold)
-                .padding([.leading])
-
-            // Display averages
-            if !workouts.isEmpty {
-                Text("Average Duration: \(averageDuration()) seconds")
-                Text("Average Energy Burned: \(averageEnergyBurned()) kcal")
-                Text("Average Heart Rate: \(averageHeartRate()) bpm")
-                Text("Number of workouts in the past month: \(workoutsInPastMonth())")
+        ScrollView {
+            HStack {
+                VStack(alignment: .leading) {
+                    Text("\(splitName)")
+                        .font(.largeTitle)
+                        .fontWeight(.semibold)
+                    
+                    HStack(spacing: 2) {
+                        Text("Over")
+                            .font(.title3)
+                            .fontWeight(.semibold)
+                        Menu(selectedTimeframe) {
+                                            ForEach(timeframes, id: \.self) { timeframe in
+                                                Button(timeframe) {
+                                                    selectedTimeframe = timeframe
+                                                }
+                                            }
+                                        }
+                                        .font(.title3)
+                                        .fontWeight(.semibold)
+                    }
+                    
+                    if !workouts.isEmpty {
+                        InfoSquare(title: "Count", value: "\(workoutsInPastMonth())")
+                        InfoSquare(title: "Energy Burned", value: "\(Int(averageEnergyBurned().rounded())) kcal")
+                        InfoSquare(title: "Duration", value: formatDuration(Int(averageDuration().rounded())))
+                        InfoSquare(title: "Heart Rate", value: "\(Int(averageHeartRate().rounded())) bpm")
+                    }
+                    
+                    Text("All Lifts")
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                        .padding([.top])
+                    ForEach(workouts, id: \.startDate) { workout in
+                                        Text("\(workout.startDate, formatter: itemFormatter)")
+                                    }
+                    Button("Delete Split") {
+                        splitManager.deleteSplit(named: splitName)
+                    }
+                    .padding(.top)
+                    .foregroundColor(.red)
+                }
+                .padding([.leading, .trailing, .bottom])
+                Spacer()
             }
-
-            List(workouts, id: \.startDate) { workout in
-                Text("Workout on \(workout.startDate, formatter: itemFormatter)")
-            }
-
-            Button("Delete Split") {
-                splitManager.deleteSplit(named: splitName)
-            }
-            .padding()
-            .foregroundColor(.red)
         }
     }
 }
@@ -68,9 +92,28 @@ struct SplitView: View {
 private let itemFormatter: DateFormatter = {
     let formatter = DateFormatter()
     formatter.dateStyle = .long
-    formatter.timeStyle = .medium
     return formatter
 }()
+
+private struct InfoSquare: View {
+    var title: String
+    var value: String
+
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text(title)
+                .font(.title)
+                .fontWeight(.heavy)
+                .foregroundColor(.gray)
+            Text(value)
+                .font(.title2)
+                .fontWeight(.medium)
+        }
+        .padding()
+        .background(Color.gray.opacity(0.2))
+        .cornerRadius(10)
+    }
+}
 
 struct SplitView_Previews : PreviewProvider {
     static let mockStoredWorkout = StoredWorkout(
