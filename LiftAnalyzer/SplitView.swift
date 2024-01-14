@@ -14,29 +14,48 @@ struct SplitView: View {
     var workouts: [StoredWorkout]
     @State private var selectedTimeframe = "one month"
     private let timeframes = ["one week", "one month", "three months", "six months", "one year", "all time"]
+    
+    //filter workouts by timeframe
+    private var filteredWorkouts: [StoredWorkout] {
+        switch selectedTimeframe {
+            case "one week":
+                return workouts.filter { $0.startDate >= Calendar.current.date(byAdding: .day, value: -7, to: Date()) ?? Date() }
+            case "one month":
+                return workouts.filter { $0.startDate >= Calendar.current.date(byAdding: .month, value: -1, to: Date()) ?? Date() }
+            case "three months":
+                return workouts.filter { $0.startDate >= Calendar.current.date(byAdding: .month, value: -3, to: Date()) ?? Date() }
+            case "six months":
+                return workouts.filter { $0.startDate >= Calendar.current.date(byAdding: .month, value: -6, to: Date()) ?? Date() }
+            case "one year":
+                return workouts.filter { $0.startDate >= Calendar.current.date(byAdding: .year, value: -1, to: Date()) ?? Date() }
+            case "all time":
+                return workouts
+            default:
+                return workouts
+        }
+    }
 
     // Calculate average duration
     private func averageDuration() -> TimeInterval {
-        let totalDuration = workouts.reduce(0) { $0 + $1.duration }
-        return workouts.isEmpty ? 0 : totalDuration / Double(workouts.count)
+        let totalDuration = filteredWorkouts.reduce(0) { $0 + $1.duration }
+        return filteredWorkouts.isEmpty ? 0 : totalDuration / Double(filteredWorkouts.count)
     }
 
     // Calculate average energy burned
     private func averageEnergyBurned() -> Double {
-        let totalEnergyBurned = workouts.reduce(0) { $0 + $1.totalEnergyBurned }
-        return workouts.isEmpty ? 0 : totalEnergyBurned / Double(workouts.count)
+        let totalEnergyBurned = filteredWorkouts.reduce(0) { $0 + $1.totalEnergyBurned }
+        return filteredWorkouts.isEmpty ? 0 : totalEnergyBurned / Double(filteredWorkouts.count)
     }
 
     // Calculate average heart rate
     private func averageHeartRate() -> Double {
-        let totalHeartRate = workouts.reduce(0) { $0 + $1.averageHeartRate }
-        return workouts.isEmpty ? 0 : totalHeartRate / Double(workouts.count)
+        let totalHeartRate = filteredWorkouts.reduce(0) { $0 + $1.averageHeartRate }
+        return filteredWorkouts.isEmpty ? 0 : totalHeartRate / Double(filteredWorkouts.count)
     }
     
-    // Calculate # of workouts in the past month
-    private func workoutsInPastMonth() -> Int {
-        let oneMonthAgo = Calendar.current.date(byAdding: .month, value: -1, to: Date()) ?? Date()
-        return workouts.filter { $0.startDate >= oneMonthAgo }.count
+    // Calculate # of workouts in selected timeframe
+    private func workoutsInTimeFrame() -> Int {
+        return filteredWorkouts.count
     }
 
     var body: some View {
@@ -63,7 +82,7 @@ struct SplitView: View {
                     }
                     
                     if !workouts.isEmpty {
-                        InfoSquare(title: "Count", value: "\(workoutsInPastMonth())")
+                        InfoSquare(title: "Count", value: "\(workoutsInTimeFrame())")
                         InfoSquare(title: "Energy Burned", value: "\(Int(averageEnergyBurned().rounded())) kcal")
                         InfoSquare(title: "Duration", value: formatDuration(Int(averageDuration().rounded())))
                         InfoSquare(title: "Heart Rate", value: "\(Int(averageHeartRate().rounded())) bpm")

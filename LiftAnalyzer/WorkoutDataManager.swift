@@ -45,7 +45,7 @@ class WorkoutDataManager: ObservableObject {
             return
         }
 
-        let typesToRead: Set<HKObjectType> = [HKObjectType.workoutType(), heartRateType]
+        let typesToRead: Set<HKObjectType> = [HKObjectType.workoutType(), heartRateType, HKObjectType.quantityType(forIdentifier: .restingHeartRate)!, HKObjectType.characteristicType(forIdentifier: .dateOfBirth)!]
 
         healthStore?.requestAuthorization(toShare: nil, read: typesToRead) { success, error in
             if success {
@@ -95,6 +95,59 @@ class WorkoutDataManager: ObservableObject {
 
         healthStore?.execute(query)
     }
+
+    //function to fetch resting heart rate from HealthKit
+    func fetchRestingHeartRate(completion: @escaping (Double) -> Void) {
+        guard let heartRateType = HKQuantityType.quantityType(forIdentifier: .restingHeartRate) else {
+            completion(0)
+            return
+        }
+
+        let query = HKStatisticsQuery(quantityType: heartRateType, quantitySamplePredicate: nil, options: .discreteAverage) { _, statistics, _ in
+            DispatchQueue.main.async {
+                let restingHeartRate = statistics?.averageQuantity()?.doubleValue(for: HKUnit(from: "count/min")) ?? 72
+                completion(restingHeartRate)
+            }
+        }
+
+        healthStore?.execute(query)
+    }
+
+    //function to access date of birth, then calculate age, then calculate max heart rate using age
+    func fetchMaxHR(completion: @escaping (Double) -> Void) {
+    if let healthStore = healthStore {
+        let dateOfBirthComponents = try! healthStore.dateOfBirthComponents()
+        let calendar = Calendar.current
+        let currentYear = calendar.component(.year, from: Date())
+        let age = currentYear - dateOfBirthComponents.year!
+        let maxHeartRate = 220 - Double(age)
+        completion(maxHeartRate)
+    }
+}
+
+    //function to fetch heart rate time series from HealthKit
+    func fetchHeartRateTimeSeries(for workout: HKWorkout, completion: @escaping ([Double]) -> Void) {
+    guard let heartRateType = HKQuantityType.quantityType(forIdentifier: .heartRate) else {
+        completion([])
+        return
+    }
+
+    let predicate = HKQuery.predicateForSamples(withStart: workout.startDate, end: workout.endDate, options: .strictStartDate)
+    let query = HKSampleQuery(sampleType: heartRateType, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: nil) { (query, samples, error) in
+        DispatchQueue.main.async {
+            guard let samples = samples as? [HKQuantitySample], error == nil else {
+                completion([])
+                return
+            }
+
+            let heartRates = samples.map { $0.quantity.doubleValue(for: HKUnit(from: "count/min")) }
+            completion(heartRates)
+        }
+    }
+
+    healthStore?.execute(query)
+}
+
     
     func updateWorkoutSplits(from splitManager: SplitManager) {
         for (splitName, storedWorkouts) in splitManager.splits {
