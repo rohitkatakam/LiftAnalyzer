@@ -58,6 +58,12 @@ struct SplitView: View {
         return filteredWorkouts.count
     }
 
+    // Calculate average percent in zone
+    private func averagePercentInZone() -> Double {
+        let totalPercentInZone = filteredWorkouts.reduce(0) { $0 + $1.percentInZone }
+        return filteredWorkouts.isEmpty ? 0 : totalPercentInZone / Double(filteredWorkouts.count)
+    }
+
     var body: some View {
         ScrollView {
             HStack {
@@ -67,25 +73,88 @@ struct SplitView: View {
                         .fontWeight(.semibold)
                     
                     HStack(spacing: 2) {
-                        Text("Over")
-                            .font(.title3)
+                        Text("Showing averages over")
+                            .font(.body)
                             .fontWeight(.semibold)
-                        Menu(selectedTimeframe) {
-                                            ForEach(timeframes, id: \.self) { timeframe in
-                                                Button(timeframe) {
-                                                    selectedTimeframe = timeframe
-                                                }
-                                            }
+                        Button(action: {
+                            let popupView = PopupView {
+                                VStack {
+                                    Text("Timeframe")
+                                        .font(.title)
+                                        .fontWeight(.heavy)
+                                        .foregroundColor(Color.primary)
+                                    ForEach(timeframes, id: \.self) { timeframe in
+                                        Button(timeframe) {
+                                            selectedTimeframe = timeframe
                                         }
-                                        .font(.title3)
-                                        .fontWeight(.semibold)
+                                        .foregroundColor(.primary)
+                                    }
+                                }
+                                .frame(maxWidth: .infinity)
+                            }
+                            let popupViewController = PopupHostingController(rootView: popupView)
+                            popupViewController.view.backgroundColor = .clear
+                            popupViewController.modalPresentationStyle = .overCurrentContext
+                            popupViewController.modalTransitionStyle = .crossDissolve
+                            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                            let rootViewController = windowScene.windows.first?.rootViewController {
+                                rootViewController.present(popupViewController, animated: true, completion: nil)
+                            }
+                        }) {
+                            HStack(spacing: 2) {
+                                Text(selectedTimeframe)
+                                .font(.body)
+                                .fontWeight(.semibold)
+                                .foregroundColor(.primary)
+                                Image(systemName: "chevron.down.circle.fill")
+                                    .foregroundStyle(.gray)
+                            }
+                        }
                     }
                     
                     if !workouts.isEmpty {
-                        InfoSquare(title: "Count", value: "\(workoutsInTimeFrame())")
-                        InfoSquare(title: "Energy Burned", value: "\(Int(averageEnergyBurned().rounded())) kcal")
-                        InfoSquare(title: "Duration", value: formatDuration(Int(averageDuration().rounded())))
-                        InfoSquare(title: "Heart Rate", value: "\(Int(averageHeartRate().rounded())) bpm")
+                        VStack {
+                            //First row of InfoSquares (Count, Duration, Heart Rate)
+                            InfoSquare(title: "Count", value: "\(workoutsInTimeFrame())", color: .primary)
+                            InfoSquare(title: "Duration", value: formatDuration(Int(averageDuration().rounded())), color: .red)
+                            InfoSquare(title: "Heart Rate", value: "\(Int(averageHeartRate().rounded())) bpm", color: .orange)
+                            InfoSquare(title: "Energy Burned", value: "\(Int(averageEnergyBurned().rounded())) kcal", color: .indigo)
+                            HStack {
+                                InfoSquare(title: "Percent in Zone", value: "\(Int(averagePercentInZone() * 100))%", color: .teal)
+                                Button(action: {
+                                    let popupView = PopupView {
+                                        VStack {
+                                            Text("Heart Rate Zone")
+                                                .font(.title)
+                                                .fontWeight(.heavy)
+                                                .foregroundColor(Color.primary)
+                                            Text("A recommended sweet-spot of intensity for lifting weights: high enough that you exerting yourself, but low enough that your body will not burn excess nutrients that could be used to build muscle.")
+                                                .font(.body)
+                                                .fontWeight(.medium)
+                                                .foregroundColor(Color.primary)
+                                        }
+                                        .frame(maxWidth: .infinity)
+                                    }
+                                    let popupViewController = PopupHostingController(rootView: popupView)
+                                    popupViewController.view.backgroundColor = .clear
+                                    popupViewController.modalPresentationStyle = .overCurrentContext
+                                    popupViewController.modalTransitionStyle = .crossDissolve
+                                    if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                                    let rootViewController = windowScene.windows.first?.rootViewController {
+                                        rootViewController.present(popupViewController, animated: true, completion: nil)
+                                    }
+                                }) {
+                                    Image(systemName: "info.circle.fill")
+                                        .foregroundStyle(.gray)
+                                }
+                            }
+                            .padding(.top, 2)
+                        }
+                        // InfoSquare(title: "Count", value: "\(workoutsInTimeFrame())")
+                        // InfoSquare(title: "Energy Burned", value: "\(Int(averageEnergyBurned().rounded())) kcal")
+                        // InfoSquare(title: "Duration", value: formatDuration(Int(averageDuration().rounded())))
+                        // InfoSquare(title: "Heart Rate", value: "\(Int(averageHeartRate().rounded())) bpm")
+                        // InfoSquare(title: "Percent in Zone", value: "\(Int(averagePercentInZone() * 100))%")
                     }
                     
                     Text("All Lifts")
@@ -117,16 +186,19 @@ private let itemFormatter: DateFormatter = {
 private struct InfoSquare: View {
     var title: String
     var value: String
+    var color: Color
 
     var body: some View {
-        VStack(alignment: .leading) {
+        HStack {
             Text(title)
-                .font(.title)
+                .font(.body)
                 .fontWeight(.heavy)
                 .foregroundColor(.gray)
+            Spacer()
             Text(value)
-                .font(.title2)
+                .font(.body)
                 .fontWeight(.medium)
+                .foregroundColor(color)
         }
         .padding()
         .background(Color.gray.opacity(0.2))
@@ -140,7 +212,8 @@ struct SplitView_Previews : PreviewProvider {
         duration: 3600, // For example, 1 hour
         totalEnergyBurned: 500, // Example value
         totalDistance: 1000, // Example value in meters
-        averageHeartRate: 120 // Example average heart rate
+        averageHeartRate: 120, // Example average heart rate
+        percentInZone: 0.5
     )
     
     static var previews: some View {

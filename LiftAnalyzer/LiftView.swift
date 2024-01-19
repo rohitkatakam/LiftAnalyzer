@@ -45,26 +45,27 @@ struct LiftView: View {
                             .font(.largeTitle)
                             .fontWeight(.semibold)
                         
-                        SplitInfoSquare(workoutData: $workoutData, showDropDown: $showDropDown)
-                        InfoSquare(title: "Energy Burned", value: "\(Int(workoutData.workout.totalEnergyBurned?.doubleValue(for: .kilocalorie()).rounded() ?? 0)) kcal")
-                        InfoSquare(title: "Duration", value: formatDuration(Int(workoutData.workout.duration.rounded())))
-                        InfoSquare(title: "Average Heart Rate", value: averageHeartRate != nil ? "\(Int(averageHeartRate!.rounded())) bpm" : "Fetching...")
+                        SplitInfoSquare(workoutData: $workoutData, showDropDown: $showDropDown, percentInZone: percentInZone ?? 0)
+                        InfoSquare(title: "Duration", value: formatDuration(Int(workoutData.workout.duration.rounded())), color: .red)
+                        InfoSquare(title: "Avg. Heart Rate", value: averageHeartRate != nil ? "\(Int(averageHeartRate!.rounded())) bpm" : "Fetching...", color: .orange)
+                        InfoSquare(title: "Energy Burned", value: "\(Int(workoutData.workout.totalEnergyBurned?.doubleValue(for: .kilocalorie()).rounded() ?? 0)) kcal", color: .indigo)
                         HStack {
-                            InfoSquare(title: "Percent in Zone", value: percentInZone != nil ? "\(Int(percentInZone! * 100))%" : "Fetching...")
+                            InfoSquare(title: "Percent in Zone", value: percentInZone != nil ? "\(Int(percentInZone! * 100))%" : "Fetching...", color: .teal)
                             Button(action: {
                                 let popupView = PopupView {
-                                    VStack(alignment:.leading) {
+                                    VStack {
                                         Text("Heart Rate Zone")
                                             .font(.title)
                                             .fontWeight(.heavy)
-                                        Text("Heart rate zone is a recommended sweet-spot of intensity for lifting weights: high enough that you exerting yourself, but low enough that your body will burn nutrients other than fat.")
+                                            .foregroundColor(Color.primary)
+                                        Text("A recommended sweet-spot of intensity for lifting weights: high enough that you exerting yourself, but low enough that your body will not burn excess nutrients that could be used to build muscle.")
                                             .font(.body)
                                             .fontWeight(.medium)
+                                            .foregroundColor(Color.primary)
                                     }
                                     .frame(maxWidth: .infinity)
                                 }
                                 let popupViewController = PopupHostingController(rootView: popupView)
-                                popupViewController.onDismiss = { self.isPopupShown = false }
                                 popupViewController.view.backgroundColor = .clear
                                 popupViewController.modalPresentationStyle = .overCurrentContext
                                 popupViewController.modalTransitionStyle = .crossDissolve
@@ -72,9 +73,9 @@ struct LiftView: View {
                                 let rootViewController = windowScene.windows.first?.rootViewController {
                                     rootViewController.present(popupViewController, animated: true, completion: nil)
                                 }
-                                self.isPopupShown = true
                             }) {
-                                Image(systemName: "info.circle")
+                                Image(systemName: "info.circle.fill")
+                                    .foregroundStyle(.gray)
                             }
                         }
                         .padding(.top, 3)
@@ -205,13 +206,13 @@ class PopupViewController: UIViewController {
     func configUI() {
         // Configure your UI elements here
         containerView.layer.cornerRadius = 20 
-        containerView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-        containerView.backgroundColor = .lightGray
+        containerView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner, .layerMinXMaxYCorner]
+        containerView.backgroundColor = .gray
     }
 
     @objc func animateIn() {
-        UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 1, options: [.curveEaseInOut]) {
-            self.containerView.frame.origin.y = self.view.bounds.height - self.containerView.frame.height
+        UIView.animate(withDuration: 0.7, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 1, options: [.curveEaseInOut]) {
+            self.containerView.center = self.view.center
         }
     }
 
@@ -302,6 +303,7 @@ struct HeartRateGraph: View {
                         )
             Text("Heartrate over Time")
             .position(x: geometry.size.width / 2, y: geometry.size.height)
+            .foregroundStyle(.gray)
             .font(.title2)
             .fontWeight(.medium)
             if isDragging, let dataPoint = selectedDataPoint {
@@ -325,46 +327,92 @@ struct HeartRateGraph: View {
 }
 
 private struct SplitInfoSquare: View {
+    @EnvironmentObject var splitManager: SplitManager
+    @EnvironmentObject var workoutDataManager: WorkoutDataManager
     @Binding var workoutData: WorkoutData
     @Binding var showDropDown: Bool
+    var percentInZone: Double
 
     var body: some View {
-        VStack(alignment: .leading) {
+        HStack {
             HStack {
                 Text("Split")
-                    .font(.title)
+                    .font(.body)
                     .fontWeight(.heavy)
                     .foregroundColor(.gray)
-                Button(action: { showDropDown.toggle() }) {
-                    Image(systemName: "pencil")
-                }
-                .popover(isPresented: $showDropDown, arrowEdge: .top) {
-                    SplitDropDownMenu(workoutData: $workoutData, showDropDown: $showDropDown)
+                Button(action: {
+                    let popupView = PopupView {
+                        Text("Change split")
+                            .font(.title)
+                            .fontWeight(.heavy)
+                            .foregroundColor(Color.primary)
+                        ScrollView {
+                            VStack {
+                                ForEach(splitManager.splits.keys.sorted(), id: \.self) { split in
+                                    Button(split) {
+                                        updateSplit(split, pInZone: percentInZone)
+                                    }
+                                    .font(.body)
+                                    .fontWeight(.medium)
+                                    .foregroundColor(Color.primary)
+                                }
+                                Button("Clear Split") {
+                                    updateSplit(nil, pInZone: percentInZone)
+                                }
+                                .font(.body)
+                                .fontWeight(.medium)
+                                .foregroundColor(Color.red)
+                            }
+                            .frame(maxWidth: .infinity) 
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+                    let popupViewController = PopupHostingController(rootView: popupView)
+                    popupViewController.view.backgroundColor = .clear
+                    popupViewController.modalPresentationStyle = .overCurrentContext
+                    popupViewController.modalTransitionStyle = .crossDissolve
+                    if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                    let rootViewController = windowScene.windows.first?.rootViewController {
+                        rootViewController.present(popupViewController, animated: true, completion: nil)
+                    }
+                }) {
+                    Image(systemName: "pencil.circle.fill")
+                        .foregroundStyle(.gray)
                 }
             }
+            Spacer()
             Text(workoutData.split ?? "NO SPLIT")
-                .font(.title2)
+                .font(.body)
                 .fontWeight(.medium)
         }
         .padding()
         .background(Color.gray.opacity(0.2))
         .cornerRadius(10)
     }
+
+    private func updateSplit(_ newSplit: String?, pInZone: Double) {
+        let workout = workoutData.workout
+        splitManager.updateWorkoutSplit(workout: workout, newSplit: newSplit, pInZone: percentInZone, workoutDataManager: workoutDataManager)
+        showDropDown = false
+    }
 }
 
 private struct InfoSquare: View {
     var title: String
     var value: String
+    var color: Color
 
     var body: some View {
-        VStack(alignment: .leading) {
+        HStack {
             Text(title)
-                .font(.title)
+                .font(.body)
                 .fontWeight(.heavy)
                 .foregroundColor(.gray)
+            Spacer()
             Text(value)
-                .font(.title2)
+                .font(.body)
                 .fontWeight(.medium)
+                .foregroundColor(color)
         }
         .padding()
         .background(Color.gray.opacity(0.2))
@@ -381,7 +429,7 @@ private let itemFormatter: DateFormatter = {
 
 private let headingFormatter: DateFormatter = {
     let formatter = DateFormatter()
-    formatter.dateFormat = "MMM d"
+    formatter.dateFormat = "EEEE, MMMM d"
     return formatter
 }()
 

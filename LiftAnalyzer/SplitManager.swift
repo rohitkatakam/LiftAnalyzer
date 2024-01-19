@@ -14,6 +14,7 @@ struct StoredWorkout: Codable {
     let totalEnergyBurned: Double
     let totalDistance: Double
     let averageHeartRate: Double
+    let percentInZone: Double
 }
 
 
@@ -85,7 +86,7 @@ class SplitManager: ObservableObject {
         splits.removeValue(forKey: name)
     }
     
-    func updateWorkoutSplit(workout: HKWorkout, newSplit: String?, workoutDataManager: WorkoutDataManager) {
+    func updateWorkoutSplit(workout: HKWorkout, newSplit: String?, pInZone: Double, workoutDataManager: WorkoutDataManager) {
         // Asynchronously fetch the average heart rate
         workoutDataManager.fetchAverageHeartRate(for: workout) { [weak self] averageHeartRate in
             guard let self = self else { return }
@@ -96,7 +97,8 @@ class SplitManager: ObservableObject {
                 duration: workout.duration,
                 totalEnergyBurned: workout.totalEnergyBurned?.doubleValue(for: .kilocalorie()) ?? 0,
                 totalDistance: workout.totalDistance?.doubleValue(for: .meter()) ?? 0,
-                averageHeartRate: averageHeartRate
+                averageHeartRate: averageHeartRate,
+                percentInZone: pInZone
             )
 
             // Update splits dictionary in a thread-safe way

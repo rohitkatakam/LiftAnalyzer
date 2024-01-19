@@ -11,6 +11,7 @@ struct HomepageView: View {
     @EnvironmentObject var workoutDataManager: WorkoutDataManager
     @EnvironmentObject var splitManager: SplitManager
     @State private var showingAddSplitView = false
+    @State private var newSplitName = ""
     
     private var itemHeight: CGFloat = 70 // Adjust this based on your button size
     
@@ -18,7 +19,37 @@ struct HomepageView: View {
             NavigationView {
                 ScrollView {
                     VStack(alignment: .leading) {
-                        sectionHeader("Recent Lifts")
+                        HStack(spacing: 2) {
+                            sectionHeader("Recent Lifts")
+                            Button(action: {
+                                let popupView = PopupView {
+                                    VStack {
+                                        Text("Getting Started")
+                                            .font(.title)
+                                            .fontWeight(.heavy)
+                                            .foregroundColor(Color.primary)
+                                        ScrollView{
+                                            Text("Tap the plus button to add a split, tap on one of your recent workouts to edit the split for the workou and view stats for that lift. Tap on one of your created splits to view averages for that split. If no lifts are showing up, make sure you allow this app to access your health data in settings; also make sure you are recording \"Traditional Strength Training\" workouts on your Apple Watch.")
+                                            .font(.body)
+                                            .fontWeight(.medium)
+                                            .foregroundColor(Color.primary)
+                                        }
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                }
+                                let popupViewController = PopupHostingController(rootView: popupView)
+                                popupViewController.view.backgroundColor = .clear
+                                popupViewController.modalPresentationStyle = .overCurrentContext
+                                popupViewController.modalTransitionStyle = .crossDissolve
+                                if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                                let rootViewController = windowScene.windows.first?.rootViewController {
+                                    rootViewController.present(popupViewController, animated: true, completion: nil)
+                                }
+                            }) {
+                                Image(systemName: "info.circle.fill")
+                                    .foregroundStyle(.gray)
+                            }
+                        }
 
                         // Scrollable section for workouts
                         ScrollViewWrapper(itemCount: workoutDataManager.workouts.count) {
@@ -34,7 +65,41 @@ struct HomepageView: View {
 
                         HStack(spacing: 2) {
                             sectionHeader("Splits")
-                            plusButton
+                            Button(action: {
+                                let popupView = PopupView {
+                                    VStack {
+                                        Text("Add Split")
+                                            .font(.title)
+                                            .fontWeight(.heavy)
+                                            .foregroundColor(Color.primary)
+                                        TextField("Split Name", text: $newSplitName)
+                                            .padding()
+                                            .background(Color.gray)
+                                            .foregroundStyle(Color.primary)
+                                            .cornerRadius(8)
+                                        Button("Add Split") {
+                                            addSplit()
+                                        }
+                                        .bold()
+                                        .foregroundColor(Color.primary)
+                                        .padding()
+                                        .background(Color.gray)
+                                        .cornerRadius(8)
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                }
+                                let popupViewController = PopupHostingController(rootView: popupView)
+                                popupViewController.view.backgroundColor = .clear
+                                popupViewController.modalPresentationStyle = .overCurrentContext
+                                popupViewController.modalTransitionStyle = .crossDissolve
+                                if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                                let rootViewController = windowScene.windows.first?.rootViewController {
+                                    rootViewController.present(popupViewController, animated: true, completion: nil)
+                                }
+                            }) {
+                                Image(systemName: "plus.circle.fill")
+                                    .foregroundStyle(.gray)
+                            }
                         }
 
                         // Scrollable section for splits
@@ -50,10 +115,17 @@ struct HomepageView: View {
                 }
             }
             .sheet(isPresented: $showingAddSplitView) {
-                AddSplitView(isPresented: $showingAddSplitView, splitManager: splitManager)
+                AddSplitView(splitManager: splitManager)
             }
         }
 
+    private func addSplit() {
+        if !newSplitName.isEmpty {
+            splitManager.addSplit(named: newSplitName)
+        }
+        self.newSplitName = ""
+    }
+    
         private func calculateScrollViewHeight(_ itemCount: Int) -> CGFloat {
             let totalHeight = CGFloat(itemCount) * itemHeight
             return min(totalHeight, itemHeight * 3)
@@ -116,11 +188,12 @@ struct WorkoutView: View {
                 .fill(Color.gray.opacity(0.2))
                 .cornerRadius(10)
 
-            HStack {
-                Text("\(itemFormatter.string(from: workoutData.workout.startDate))")
+            HStack(spacing: 2) {
+                Text("\(itemFormatter.string(from: workoutData.workout.startDate))-")
                     .bold()
                 Text(workoutData.split ?? "NO SPLIT")
                     .bold()
+                    .foregroundColor(workoutData.split == nil ? Color.red : Color.primary)
             }
             .padding(.vertical, 10)
             .foregroundColor(Color.primary) // Adapts to dark/light mode
@@ -150,7 +223,7 @@ struct SplitHomeView: View {
 
 private let itemFormatter: DateFormatter = {
     let formatter = DateFormatter()
-    formatter.dateFormat = "MMM d"
+    formatter.dateFormat = "EEEE, MMMM d"
     return formatter
 }()
 

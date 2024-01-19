@@ -29,7 +29,7 @@ struct SplitDropDownMenu: View {
 
     private func updateSplit(_ newSplit: String?) {
         let workout = workoutData.workout
-        splitManager.updateWorkoutSplit(workout: workout, newSplit: newSplit, workoutDataManager: workoutDataManager)
+        splitManager.updateWorkoutSplit(workout: workout, newSplit: newSplit, pInZone: 0.5, workoutDataManager: workoutDataManager)
         showDropDown = false
     }
 }
