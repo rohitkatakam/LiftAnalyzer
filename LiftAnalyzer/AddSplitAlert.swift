@@ -1,9 +1,10 @@
 //
-//  AddSplitAlert.swift
+//  File.swift
 //  LiftAnalyzer
 //
-//  Created by Rohit Katakam on 12/19/23.
+//  Created by Rohit Katakam on 1/14/24.
 //
+
 import SwiftUI
 
 struct AddSplitView: View {
