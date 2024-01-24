@@ -78,7 +78,7 @@ struct LiftView: View {
                                     .foregroundStyle(.gray)
                             }
                         }
-                        .padding(.top, 3)
+                        .padding([.top, .bottom], 3)
                         //heart rate time series graph
                         if !heartRateTimeSeries.isEmpty {
                             HeartRateGraph(heartRateTimeSeries: heartRateTimeSeries, startDate: workoutData.workout.startDate, workoutDurationInSeconds: workoutData.workout.duration, upperZoneLimit: zoneUpperLimit ?? 0, lowerZoneLimit: zoneLowerLimit ?? 0)
@@ -190,9 +190,15 @@ class PopupViewController: UIViewController {
         gestureView.frame = view.bounds
         gestureView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         gestureView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(animateOut)))
+        let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(animateOut))
+        swipeDown.direction = .down
+        gestureView.addGestureRecognizer(swipeDown)
+        gestureView.backgroundColor = .black
+        
 
         view.addSubview(containerView)
-        containerView.frame = CGRect(x: 0, y: view.bounds.height, width: view.bounds.width, height: 200)
+        let padding: CGFloat = 17
+        containerView.frame = CGRect(x: padding, y: view.bounds.height, width: view.bounds.width - 2 * padding, height: 200)
 
         containerView.addSubview(contentView)
         contentView.frame = containerView.bounds.inset(by: UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10))
@@ -203,22 +209,31 @@ class PopupViewController: UIViewController {
         animateIn()
     }
 
+    func buttonPressed() {
+        animateOut()
+    }
+
     func configUI() {
         // Configure your UI elements here
         containerView.layer.cornerRadius = 20 
         containerView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner, .layerMinXMaxYCorner]
         containerView.backgroundColor = .gray
+        //this wone works for sure , but for fixed height
+        //containerView.frame = CGRect(x: 0, y: view.bounds.height, width: view.bounds.width, height: 300)
     }
 
     @objc func animateIn() {
+        self.gestureView.alpha = 0
         UIView.animate(withDuration: 0.7, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 1, options: [.curveEaseInOut]) {
             self.containerView.center = self.view.center
+            self.gestureView.alpha = 0.7
         }
     }
 
     @objc func animateOut() {
         UIView.animate(withDuration: 0.3, animations: {
             self.containerView.frame.origin.y = self.view.bounds.height
+            self.gestureView.alpha = 0
         }) { _ in
             self.dismiss(animated: false, completion: nil)
         }
@@ -316,6 +331,9 @@ struct HeartRateGraph: View {
             }
         }
         .frame(height: 200)
+        .padding()
+        .background(Color.gray.opacity(0.2).allowsHitTesting(false))
+        .cornerRadius(10) 
     }
     func formatTime(x: Double, totalWidth: CGFloat) -> String {
     let totalSeconds = x / Double(totalWidth) * workoutDurationInSeconds
@@ -342,26 +360,31 @@ private struct SplitInfoSquare: View {
                     .foregroundColor(.gray)
                 Button(action: {
                     let popupView = PopupView {
-                        Text("Change split")
+                        HStack {
+                            Text("Change split")
                             .font(.title)
                             .fontWeight(.heavy)
                             .foregroundColor(Color.primary)
+                            Button(action: {
+                                updateSplit(nil, pInZone: percentInZone)
+                            }) {
+                                Image(systemName: "trash.circle.fill")
+                                    .imageScale(.large)
+                                    .foregroundStyle(.red)
+                            }
+                        }
                         ScrollView {
                             VStack {
                                 ForEach(splitManager.splits.keys.sorted(), id: \.self) { split in
                                     Button(split) {
                                         updateSplit(split, pInZone: percentInZone)
                                     }
-                                    .font(.body)
-                                    .fontWeight(.medium)
+                                    .bold()
                                     .foregroundColor(Color.primary)
+                                    .padding()
+                                    .background(Color.gray)
+                                    .cornerRadius(8)
                                 }
-                                Button("Clear Split") {
-                                    updateSplit(nil, pInZone: percentInZone)
-                                }
-                                .font(.body)
-                                .fontWeight(.medium)
-                                .foregroundColor(Color.red)
                             }
                             .frame(maxWidth: .infinity) 
                         }
@@ -375,7 +398,8 @@ private struct SplitInfoSquare: View {
                     let rootViewController = windowScene.windows.first?.rootViewController {
                         rootViewController.present(popupViewController, animated: true, completion: nil)
                     }
-                }) {
+                }) 
+                {
                     Image(systemName: "pencil.circle.fill")
                         .foregroundStyle(.gray)
                 }
@@ -384,6 +408,7 @@ private struct SplitInfoSquare: View {
             Text(workoutData.split ?? "NO SPLIT")
                 .font(.body)
                 .fontWeight(.medium)
+                .foregroundColor(workoutData.split == nil ? Color.red : Color.primary)
         }
         .padding()
         .background(Color.gray.opacity(0.2))

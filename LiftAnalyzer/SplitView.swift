@@ -14,6 +14,7 @@ struct SplitView: View {
     var workouts: [StoredWorkout]
     @State private var selectedTimeframe = "one month"
     private let timeframes = ["one week", "one month", "three months", "six months", "one year", "all time"]
+    @State private var showingDeleteAlert = false
     
     //filter workouts by timeframe
     private var filteredWorkouts: [StoredWorkout] {
@@ -68,10 +69,29 @@ struct SplitView: View {
         ScrollView {
             HStack {
                 VStack(alignment: .leading) {
-                    Text("\(splitName)")
-                        .font(.largeTitle)
-                        .fontWeight(.semibold)
-                    
+                    HStack {
+                        Text("\(splitName)")
+                            .font(.largeTitle)
+                            .fontWeight(.semibold)
+                        Button(action: {
+                            showingDeleteAlert = true
+                        }) {
+                            Image(systemName: "trash.circle.fill")
+                                .imageScale(.large)
+                                .foregroundStyle(.red)
+                        }
+                        .alert(isPresented: $showingDeleteAlert) {
+                            Alert(
+                                title: Text("Delete Split"),
+                                message: Text("Are you sure you want to delete this split? This action cannot be undone."),
+                                primaryButton: .destructive(Text("Delete")) {
+                                    splitManager.deleteSplit(named: splitName)
+                                },
+                                secondaryButton: .cancel()
+                            )
+                        }
+                    }
+                    .padding(.bottom)
                     HStack(spacing: 2) {
                         Text("Showing averages over")
                             .font(.body)
@@ -83,12 +103,22 @@ struct SplitView: View {
                                         .font(.title)
                                         .fontWeight(.heavy)
                                         .foregroundColor(Color.primary)
-                                    ForEach(timeframes, id: \.self) { timeframe in
-                                        Button(timeframe) {
-                                            selectedTimeframe = timeframe
+                                    ScrollView {
+                                        VStack {
+                                            ForEach(timeframes, id: \.self) { timeframe in
+                                                Button(timeframe) {
+                                                    selectedTimeframe = timeframe
+                                                }
+                                                .bold()
+                                                .foregroundColor(Color.primary)
+                                                .padding()
+                                                .background(Color.gray)
+                                                .cornerRadius(8)
+                                            }
                                         }
-                                        .foregroundColor(.primary)
+                                        .frame(maxWidth: .infinity)
                                     }
+                                    .frame(maxWidth: .infinity)
                                 }
                                 .frame(maxWidth: .infinity)
                             }
@@ -150,11 +180,6 @@ struct SplitView: View {
                             }
                             .padding(.top, 2)
                         }
-                        // InfoSquare(title: "Count", value: "\(workoutsInTimeFrame())")
-                        // InfoSquare(title: "Energy Burned", value: "\(Int(averageEnergyBurned().rounded())) kcal")
-                        // InfoSquare(title: "Duration", value: formatDuration(Int(averageDuration().rounded())))
-                        // InfoSquare(title: "Heart Rate", value: "\(Int(averageHeartRate().rounded())) bpm")
-                        // InfoSquare(title: "Percent in Zone", value: "\(Int(averagePercentInZone() * 100))%")
                     }
                     
                     Text("All Lifts")
@@ -164,11 +189,6 @@ struct SplitView: View {
                     ForEach(workouts, id: \.startDate) { workout in
                                         Text("\(workout.startDate, formatter: itemFormatter)")
                                     }
-                    Button("Delete Split") {
-                        splitManager.deleteSplit(named: splitName)
-                    }
-                    .padding(.top)
-                    .foregroundColor(.red)
                 }
                 .padding([.leading, .trailing, .bottom])
                 Spacer()
