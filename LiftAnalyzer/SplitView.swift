@@ -78,7 +78,8 @@ struct SplitView: View {
                         }) {
                             Image(systemName: "trash.circle.fill")
                                 .imageScale(.large)
-                                .foregroundStyle(.red)
+                                .foregroundStyle(Color.red.opacity(0.8))
+                                .padding(.top,8)
                         }
                         .alert(isPresented: $showingDeleteAlert) {
                             Alert(
@@ -106,14 +107,16 @@ struct SplitView: View {
                                     ScrollView {
                                         VStack {
                                             ForEach(timeframes, id: \.self) { timeframe in
-                                                Button(timeframe) {
-                                                    selectedTimeframe = timeframe
+                                                HStack {
+                                                    Button(timeframe) {
+                                                        selectedTimeframe = timeframe
+                                                    }
+                                                    .bold()
+                                                    .foregroundColor(Color.primary)
+                                                    .padding()
+                                                    .background(Color.gray)
+                                                    .cornerRadius(8)
                                                 }
-                                                .bold()
-                                                .foregroundColor(Color.primary)
-                                                .padding()
-                                                .background(Color.gray)
-                                                .cornerRadius(8)
                                             }
                                         }
                                         .frame(maxWidth: .infinity)
@@ -158,7 +161,7 @@ struct SplitView: View {
                                                 .font(.title)
                                                 .fontWeight(.heavy)
                                                 .foregroundColor(Color.primary)
-                                            Text("A recommended sweet-spot of intensity for lifting weights: high enough that you exerting yourself, but low enough that your body will not burn excess nutrients that could be used to build muscle.")
+                                            Text("A recommended sweet-spot of intensity for lifting weights: high enough that you exerting yourself, but low enough that your body will not burn excess nutrients that could be used to build muscle. Calculated using the Karvonen formula.")
                                                 .font(.body)
                                                 .fontWeight(.medium)
                                                 .foregroundColor(Color.primary)

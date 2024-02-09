@@ -20,6 +20,7 @@
 		32A093362B304DC20014BAEE /* WorkoutDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A093352B304DC20014BAEE /* WorkoutDataManager.swift */; };
 		32A0933D2B3172400014BAEE /* SplitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A0933C2B3172400014BAEE /* SplitManager.swift */; };
 		32A093412B31A2330014BAEE /* SplitDropDownMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A093402B31A2330014BAEE /* SplitDropDownMenu.swift */; };
+		32EB6EB92B75B1990092BF77 /* PopupManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32EB6EB82B75B1990092BF77 /* PopupManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +59,7 @@
 		32A093372B3052F70014BAEE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		32A0933C2B3172400014BAEE /* SplitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitManager.swift; sourceTree = "<group>"; };
 		32A093402B31A2330014BAEE /* SplitDropDownMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitDropDownMenu.swift; sourceTree = "<group>"; };
+		32EB6EB82B75B1990092BF77 /* PopupManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +118,7 @@
 				32A093312B301FDA0014BAEE /* SplitView.swift */,
 				324BB4332B54F8F900C8DB01 /* AddSplitAlert.swift */,
 				32A0933C2B3172400014BAEE /* SplitManager.swift */,
+				32EB6EB82B75B1990092BF77 /* PopupManager.swift */,
 				32A093352B304DC20014BAEE /* WorkoutDataManager.swift */,
 				32A093402B31A2330014BAEE /* SplitDropDownMenu.swift */,
 				324F8B0D2B2B0EC000701E40 /* Assets.xcassets */,
@@ -281,6 +284,7 @@
 			files = (
 				32A093362B304DC20014BAEE /* WorkoutDataManager.swift in Sources */,
 				324F8B0C2B2B0EBE00701E40 /* HomepageView.swift in Sources */,
+				32EB6EB92B75B1990092BF77 /* PopupManager.swift in Sources */,
 				32A093322B301FDA0014BAEE /* SplitView.swift in Sources */,
 				32A0933D2B3172400014BAEE /* SplitManager.swift in Sources */,
 				324BB4342B54F8F900C8DB01 /* AddSplitAlert.swift in Sources */,

@@ -11,6 +11,7 @@ import SwiftUI
 struct LiftAnalyzerApp: App {
     var splitManager = SplitManager()
     var workoutDataManager: WorkoutDataManager
+    var popupManager = PopupManager()
 
     init() {
         workoutDataManager = WorkoutDataManager(splitManager: splitManager)
@@ -21,6 +22,7 @@ struct LiftAnalyzerApp: App {
             HomepageView()
                 .environmentObject(splitManager)
                 .environmentObject(workoutDataManager)
+                .environmentObject(popupManager)
         }
     }
 }

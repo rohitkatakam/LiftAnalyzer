@@ -29,7 +29,7 @@ struct HomepageView: View {
                                             .fontWeight(.heavy)
                                             .foregroundColor(Color.primary)
                                         ScrollView{
-                                            Text("Tap the plus button to add a split, tap on one of your recent workouts to edit the split for the workou and view stats for that lift. Tap on one of your created splits to view averages for that split. If no lifts are showing up, make sure you allow this app to access your health data in settings; also make sure you are recording \"Traditional Strength Training\" workouts on your Apple Watch.")
+                                            Text("Tap the plus button to add a split, tap on one of your recent workouts to edit the split for the workout and view stats for that lift. Tap on one of your created splits to view averages for that split. If no lifts are showing up, make sure you allow this app to access your health data in settings; also make sure you are recording \"Traditional Strength Training\" workouts on your Apple Watch.")
                                             .font(.body)
                                             .fontWeight(.medium)
                                             .foregroundColor(Color.primary)
@@ -48,6 +48,7 @@ struct HomepageView: View {
                             }) {
                                 Image(systemName: "info.circle.fill")
                                     .foregroundStyle(.gray)
+                                    .padding(.top,8)
                             }
                         }
 
@@ -99,6 +100,7 @@ struct HomepageView: View {
                             }) {
                                 Image(systemName: "plus.circle.fill")
                                     .foregroundStyle(.gray)
+                                    .padding(.top,8)
                             }
                         }
 
