@@ -401,19 +401,24 @@ private struct SplitInfoSquare: View {
                         ScrollView {
                             VStack {
                                 ForEach(splitManager.splits.keys.sorted(), id: \.self) { split in
-                                    Button(split) {
+                                    Button(action: {
                                         updateSplit(split, pInZone: percentInZone)
                                         popupManager.dismissPopup()
+                                    }) {
+                                        // Use Text as the button label and expand its tappable area with Spacer or GeometryReader if needed
+                                        Text(split)
+                                            .bold()
+                                            .frame(maxWidth: .infinity, minHeight: 36) // Ensure there's a minimum hit area
+                                            .foregroundColor(Color.primary)
+                                            .padding(5)
+                                            .background(Color.gray)
+                                            .cornerRadius(8)
                                     }
-                                    .bold()
-                                    .foregroundColor(Color.primary)
-                                    .padding()
-                                    .background(Color.gray)
-                                    .cornerRadius(8)
                                 }
                             }
                             .frame(maxWidth: .infinity) 
                         }
+                        .cornerRadius(8)
                         .frame(maxWidth: .infinity)
                     }
                         .environmentObject(popupManager)

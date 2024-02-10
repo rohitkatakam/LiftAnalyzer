@@ -109,20 +109,25 @@ struct SplitView: View {
                                         VStack {
                                             ForEach(timeframes, id: \.self) { timeframe in
                                                 HStack {
-                                                    Button(timeframe) {
+                                                    Button(action: {
                                                         selectedTimeframe = timeframe
                                                         popupManager.dismissPopup()
+                                                    }) {
+                                                        // Use Text as the button label and expand its tappable area with Spacer or GeometryReader if needed
+                                                        Text(timeframe)
+                                                            .bold()
+                                                            .frame(maxWidth: .infinity, minHeight: 36) // Ensure there's a minimum hit area
+                                                            .foregroundColor(Color.primary)
+                                                            .padding(5)
+                                                            .background(Color.gray)
+                                                            .cornerRadius(8)
                                                     }
-                                                    .bold()
-                                                    .foregroundColor(Color.primary)
-                                                    .padding()
-                                                    .background(Color.gray)
-                                                    .cornerRadius(8)
                                                 }
                                             }
                                         }
                                         .frame(maxWidth: .infinity)
                                     }
+                                    .cornerRadius(8)
                                     .frame(maxWidth: .infinity)
                                 }
                                 .frame(maxWidth: .infinity)
