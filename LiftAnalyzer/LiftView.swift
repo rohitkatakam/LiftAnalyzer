@@ -8,10 +8,12 @@
 import SwiftUI
 import HealthKit
 import UIKit
+import Combine
 
 struct LiftView: View {
     @EnvironmentObject var splitManager: SplitManager
     @EnvironmentObject var workoutDataManager: WorkoutDataManager
+    @EnvironmentObject var popupManager: PopupManager
     @Binding var workoutData: WorkoutData
     @State private var showDropDown = false
     @State private var averageHeartRate: Double?
@@ -66,6 +68,8 @@ struct LiftView: View {
                                     }
                                     .frame(maxWidth: .infinity)
                                 }
+                                    .environmentObject(popupManager)
+                                popupManager.animatePopup()
                                 let popupViewController = PopupHostingController(rootView: popupView)
                                 popupViewController.view.backgroundColor = .clear
                                 popupViewController.modalPresentationStyle = .overCurrentContext
@@ -161,19 +165,21 @@ struct LiftView: View {
     }
 
     func calculatePercentInZone() {
-    if let zoneUpperLimit = zoneUpperLimit, let zoneLowerLimit = zoneLowerLimit {
-        let totalSamples = heartRateTimeSeries.count
-        let samplesInZone = heartRateTimeSeries.filter { $0 >= zoneLowerLimit && $0 <= zoneUpperLimit }.count
-        let percentInZone = Double(samplesInZone) / Double(totalSamples)
-        self.percentInZone = percentInZone
+        if let zoneUpperLimit = zoneUpperLimit, let zoneLowerLimit = zoneLowerLimit {
+            let totalSamples = heartRateTimeSeries.count
+            let samplesInZone = heartRateTimeSeries.filter { $0 >= zoneLowerLimit && $0 <= zoneUpperLimit }.count
+            let percentInZone = Double(samplesInZone) / Double(totalSamples)
+            self.percentInZone = percentInZone
+        }
     }
-}
 }
 
 class PopupViewController: UIViewController {
     let gestureView = UIView()
     let containerView = UIView()
     let contentView: UIView
+    var popupManager: PopupManager?
+    private var cancellables: Set<AnyCancellable> = []
 
     init(contentView: UIView) {
         self.contentView = contentView
@@ -208,6 +214,18 @@ class PopupViewController: UIViewController {
 
         configUI()
         animateIn()
+        observePopupManager()
+    }
+    
+    private func observePopupManager() {
+        popupManager?.$showPopup
+            .receive(on: RunLoop.main)
+            .sink(receiveValue: { [weak self] showPopup in
+                if !showPopup {
+                    self?.animateOut()
+                }
+            })
+            .store(in: &cancellables)
     }
 
     func buttonPressed() {
@@ -243,6 +261,7 @@ class PopupViewController: UIViewController {
 
 struct PopupView<Content: View>: UIViewControllerRepresentable {
     let content: Content
+    @EnvironmentObject var popupManager: PopupManager
 
     init(@ViewBuilder content: () -> Content) {
         self.content = content()
@@ -250,7 +269,9 @@ struct PopupView<Content: View>: UIViewControllerRepresentable {
 
     func makeUIViewController(context: Context) -> PopupViewController {
         let contentView = UIHostingController(rootView: content).view!
-        return PopupViewController(contentView: contentView)
+        let viewController = PopupViewController(contentView: contentView)
+        viewController.popupManager = popupManager
+        return viewController
     }
 
     func updateUIViewController(_ uiViewController: PopupViewController, context: Context) {
@@ -348,6 +369,7 @@ struct HeartRateGraph: View {
 private struct SplitInfoSquare: View {
     @EnvironmentObject var splitManager: SplitManager
     @EnvironmentObject var workoutDataManager: WorkoutDataManager
+    @EnvironmentObject var popupManager: PopupManager
     @Binding var workoutData: WorkoutData
     @Binding var showDropDown: Bool
     var percentInZone: Double
@@ -368,6 +390,7 @@ private struct SplitInfoSquare: View {
                             .foregroundColor(Color.primary)
                             Button(action: {
                                 updateSplit(nil, pInZone: percentInZone)
+                                popupManager.dismissPopup()
                             }) {
                                 Image(systemName: "trash.circle.fill")
                                     .imageScale(.large)
@@ -380,6 +403,7 @@ private struct SplitInfoSquare: View {
                                 ForEach(splitManager.splits.keys.sorted(), id: \.self) { split in
                                     Button(split) {
                                         updateSplit(split, pInZone: percentInZone)
+                                        popupManager.dismissPopup()
                                     }
                                     .bold()
                                     .foregroundColor(Color.primary)
@@ -392,6 +416,8 @@ private struct SplitInfoSquare: View {
                         }
                         .frame(maxWidth: .infinity)
                     }
+                        .environmentObject(popupManager)
+                    popupManager.animatePopup()
                     let popupViewController = PopupHostingController(rootView: popupView)
                     popupViewController.view.backgroundColor = .clear
                     popupViewController.modalPresentationStyle = .overCurrentContext

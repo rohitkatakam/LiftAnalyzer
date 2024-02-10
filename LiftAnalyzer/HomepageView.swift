@@ -6,10 +6,14 @@
 //
 
 import SwiftUI
+import HealthKit
+import UIKit
+import Combine
 
 struct HomepageView: View {
     @EnvironmentObject var workoutDataManager: WorkoutDataManager
     @EnvironmentObject var splitManager: SplitManager
+    @EnvironmentObject var popupManager: PopupManager
     @State private var showingAddSplitView = false
     @State private var newSplitName = ""
     
@@ -37,6 +41,8 @@ struct HomepageView: View {
                                     }
                                     .frame(maxWidth: .infinity)
                                 }
+                                    .environmentObject(popupManager)
+                                popupManager.animatePopup()
                                 let popupViewController = PopupHostingController(rootView: popupView)
                                 popupViewController.view.backgroundColor = .clear
                                 popupViewController.modalPresentationStyle = .overCurrentContext
@@ -80,6 +86,7 @@ struct HomepageView: View {
                                             .cornerRadius(8)
                                         Button("Add Split") {
                                             addSplit()
+                                            popupManager.dismissPopup()
                                         }
                                         .bold()
                                         .foregroundColor(Color.primary)
@@ -89,6 +96,8 @@ struct HomepageView: View {
                                     }
                                     .frame(maxWidth: .infinity)
                                 }
+                                    .environmentObject(popupManager)
+                                popupManager.animatePopup()
                                 let popupViewController = PopupHostingController(rootView: popupView)
                                 popupViewController.view.backgroundColor = .clear
                                 popupViewController.modalPresentationStyle = .overCurrentContext

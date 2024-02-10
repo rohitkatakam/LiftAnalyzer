@@ -10,6 +10,7 @@ import HealthKit
 
 struct SplitView: View {
     @EnvironmentObject var splitManager: SplitManager
+    @EnvironmentObject var popupManager: PopupManager
     var splitName: String
     var workouts: [StoredWorkout]
     @State private var selectedTimeframe = "one month"
@@ -110,6 +111,7 @@ struct SplitView: View {
                                                 HStack {
                                                     Button(timeframe) {
                                                         selectedTimeframe = timeframe
+                                                        popupManager.dismissPopup()
                                                     }
                                                     .bold()
                                                     .foregroundColor(Color.primary)
@@ -125,6 +127,8 @@ struct SplitView: View {
                                 }
                                 .frame(maxWidth: .infinity)
                             }
+                                .environmentObject(popupManager)
+                            popupManager.animatePopup()
                             let popupViewController = PopupHostingController(rootView: popupView)
                             popupViewController.view.backgroundColor = .clear
                             popupViewController.modalPresentationStyle = .overCurrentContext
@@ -168,6 +172,8 @@ struct SplitView: View {
                                         }
                                         .frame(maxWidth: .infinity)
                                     }
+                                        .environmentObject(popupManager)
+                                    popupManager.animatePopup()
                                     let popupViewController = PopupHostingController(rootView: popupView)
                                     popupViewController.view.backgroundColor = .clear
                                     popupViewController.modalPresentationStyle = .overCurrentContext
