@@ -11,31 +11,19 @@ import HealthKit
 struct SplitView: View {
     @EnvironmentObject var splitManager: SplitManager
     @EnvironmentObject var popupManager: PopupManager
+    @EnvironmentObject var workoutDataManager: WorkoutDataManager
     var splitName: String
     var workouts: [StoredWorkout]
-    @State private var selectedTimeframe = "one month"
-    private let timeframes = ["one week", "one month", "three months", "six months", "one year", "all time"]
+    @State private var selectedStartDate: Date = Calendar.current.date(byAdding: .month, value: -1, to: Date()) ?? Date()
+    //@State private var selectedTimeframe = "one month"
+    //private let timeframes = ["one week", "one month", "three months", "six months", "one year", "all time"]
     @State private var showingDeleteAlert = false
     
     //filter workouts by timeframe
     private var filteredWorkouts: [StoredWorkout] {
-        switch selectedTimeframe {
-            case "one week":
-                return workouts.filter { $0.startDate >= Calendar.current.date(byAdding: .day, value: -7, to: Date()) ?? Date() }
-            case "one month":
-                return workouts.filter { $0.startDate >= Calendar.current.date(byAdding: .month, value: -1, to: Date()) ?? Date() }
-            case "three months":
-                return workouts.filter { $0.startDate >= Calendar.current.date(byAdding: .month, value: -3, to: Date()) ?? Date() }
-            case "six months":
-                return workouts.filter { $0.startDate >= Calendar.current.date(byAdding: .month, value: -6, to: Date()) ?? Date() }
-            case "one year":
-                return workouts.filter { $0.startDate >= Calendar.current.date(byAdding: .year, value: -1, to: Date()) ?? Date() }
-            case "all time":
-                return workouts
-            default:
-                return workouts
-        }
+        workouts.filter { $0.startDate >= selectedStartDate && $0.startDate <= Date() }
     }
+
 
     // Calculate average duration
     private func averageDuration() -> TimeInterval {
@@ -93,9 +81,8 @@ struct SplitView: View {
                             )
                         }
                     }
-                    .padding(.bottom)
                     HStack(spacing: 2) {
-                        Text("Showing averages over")
+                        Text("Showing averages since")
                             .font(.body)
                             .fontWeight(.semibold)
                         Button(action: {
@@ -105,24 +92,13 @@ struct SplitView: View {
                                         .font(.title)
                                         .fontWeight(.heavy)
                                         .foregroundColor(Color.primary)
-                                    ScrollView {
-                                        VStack {
-                                            ForEach(timeframes, id: \.self) { timeframe in
-                                                HStack {
-                                                    Button(timeframe) {
-                                                        selectedTimeframe = timeframe
-                                                        popupManager.dismissPopup()
-                                                    }
-                                                    .bold()
-                                                    .foregroundColor(Color.primary)
-                                                    .padding()
-                                                    .background(Color.gray)
-                                                    .cornerRadius(8)
-                                                }
-                                            }
-                                        }
-                                        .frame(maxWidth: .infinity)
-                                    }
+                                    DatePicker(
+                                        "Filter workouts from:",
+                                        selection: $selectedStartDate,
+                                        in: ...Date(),
+                                        displayedComponents: .date
+                                    )
+                                    .datePickerStyle(.graphical)
                                     .frame(maxWidth: .infinity)
                                 }
                                 .frame(maxWidth: .infinity)
@@ -134,15 +110,15 @@ struct SplitView: View {
                             popupViewController.modalPresentationStyle = .overCurrentContext
                             popupViewController.modalTransitionStyle = .crossDissolve
                             if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-                            let rootViewController = windowScene.windows.first?.rootViewController {
+                               let rootViewController = windowScene.windows.first?.rootViewController {
                                 rootViewController.present(popupViewController, animated: true, completion: nil)
                             }
                         }) {
                             HStack(spacing: 2) {
-                                Text(selectedTimeframe)
-                                .font(.body)
-                                .fontWeight(.semibold)
-                                .foregroundColor(.primary)
+                                Text("\(selectedStartDate, formatter: itemFormatter)")
+                                    .font(.body)
+                                    .fontWeight(.semibold)
+                                    .foregroundColor(.primary)
                                 Image(systemName: "chevron.down.circle.fill")
                                     .foregroundStyle(.gray)
                             }
@@ -179,7 +155,7 @@ struct SplitView: View {
                                     popupViewController.modalPresentationStyle = .overCurrentContext
                                     popupViewController.modalTransitionStyle = .crossDissolve
                                     if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-                                    let rootViewController = windowScene.windows.first?.rootViewController {
+                                       let rootViewController = windowScene.windows.first?.rootViewController {
                                         rootViewController.present(popupViewController, animated: true, completion: nil)
                                     }
                                 }) {
@@ -195,9 +171,19 @@ struct SplitView: View {
                         .font(.title3)
                         .fontWeight(.semibold)
                         .padding([.top])
-                    ForEach(workouts, id: \.startDate) { workout in
-                                        Text("\(workout.startDate, formatter: itemFormatter)")
-                                    }
+                    
+                    ForEach(workoutDataManager.workouts.indices, id: \.self) { index in
+                        let workoutData = workoutDataManager.workouts[index]
+                        // Check if this workoutData is within the filteredWorkouts range
+                        if filteredWorkouts.contains(where: { $0.startDate == workoutData.workout.startDate }) {
+                            NavigationLink(destination: LiftView(workoutData: Binding(
+                                get: { workoutDataManager.workouts[index] },
+                                set: { workoutDataManager.workouts[index] = $0 }
+                            ))) {
+                                Text("\(workoutData.workout.startDate, formatter: itemFormatter)")
+                            }
+                        }
+                    }
                 }
                 .padding([.leading, .trailing, .bottom])
                 Spacer()
@@ -208,7 +194,7 @@ struct SplitView: View {
 
 private let itemFormatter: DateFormatter = {
     let formatter = DateFormatter()
-    formatter.dateStyle = .long
+    formatter.dateFormat = "MMMM d"
     return formatter
 }()
 

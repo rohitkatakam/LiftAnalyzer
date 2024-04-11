@@ -115,7 +115,7 @@ struct HomepageView: View {
 
                         // Scrollable section for splits
                         ScrollViewWrapper(itemCount: splitManager.splits.count) {
-                            ForEach(Array(splitManager.splits.keys), id: \.self) { splitName in
+                            ForEach(splitManager.sortedSplitsByLastModifiedDate(), id: \.self) { splitName in
                                 NavigationLink(destination: SplitView(splitName: splitName, workouts: splitManager.splits[splitName] ?? [])) {
                                     SplitHomeView(workoutData: splitName)
                                 }

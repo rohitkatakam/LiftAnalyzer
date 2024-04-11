@@ -123,6 +123,15 @@ class SplitManager: ObservableObject {
         }
         workoutDataManager.updateWorkoutSplits(from: self)
     }
-
+    
+    func sortedSplitsByLastModifiedDate() -> [String] {
+        return splits.keys.sorted {
+            guard let lastWorkoutDate1 = splits[$0]?.max(by: { $0.startDate < $1.startDate })?.startDate,
+                  let lastWorkoutDate2 = splits[$1]?.max(by: { $0.startDate < $1.startDate })?.startDate else {
+                return false
+            }
+            return lastWorkoutDate1 > lastWorkoutDate2
+        }
+    }
 
 }
