@@ -196,23 +196,38 @@ class PopupViewController: UIViewController {
         view.addSubview(gestureView)
         gestureView.frame = view.bounds
         gestureView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        gestureView.backgroundColor = UIColor.black.withAlphaComponent(0.5)
         gestureView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(animateOut)))
         let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(animateOut))
         swipeDown.direction = .down
         gestureView.addGestureRecognizer(swipeDown)
-        gestureView.backgroundColor = .black
-        
 
         view.addSubview(containerView)
-        let padding: CGFloat = 17
-        containerView.frame = CGRect(x: padding, y: view.bounds.height, width: view.bounds.width - 2 * padding, height: 200)
+        containerView.layer.cornerRadius = 20
+        containerView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner, .layerMinXMaxYCorner]
+        containerView.backgroundColor = .gray
+        contentView.backgroundColor = .clear
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.transform = CGAffineTransform(translationX: 0, y: containerView.bounds.height)
 
         containerView.addSubview(contentView)
-        contentView.frame = containerView.bounds.inset(by: UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10))
-        contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        contentView.backgroundColor = .clear // Set the background color of contentView to be transparent
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            contentView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 10),
+            contentView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -10),
+            contentView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 10),
+            contentView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -10)
+        ])
 
-        configUI()
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            containerView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20),
+            containerView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20),
+            containerView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            containerView.heightAnchor.constraint(lessThanOrEqualToConstant: 400) // Max height if needed
+        ])
+
+
         animateIn()
         observePopupManager()
     }
@@ -242,16 +257,23 @@ class PopupViewController: UIViewController {
     }
 
     @objc func animateIn() {
-        self.gestureView.alpha = 0
+        self.view.layoutIfNeeded()  // Layout adjustments before animation
+
+        // Start with containerView positioned just off the bottom of the screen
+        containerView.transform = CGAffineTransform(translationX: 0, y: containerView.bounds.height)
+
+        // Animate containerView to move up so its bottom edge is at the bottom of the screen
         UIView.animate(withDuration: 0.7, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 1, options: [.curveEaseInOut]) {
-            self.containerView.center = self.view.center
+            self.containerView.transform = .identity  // Reset to original position, which aligns with screen bottom
             self.gestureView.alpha = 0.7
         }
     }
 
+
+    
     @objc func animateOut() {
         UIView.animate(withDuration: 0.3, animations: {
-            self.containerView.frame.origin.y = self.view.bounds.height
+            self.containerView.transform = CGAffineTransform(translationX: 0, y: self.containerView.bounds.height)  // Move back below the screen
             self.gestureView.alpha = 0
         }) { _ in
             self.dismiss(animated: false, completion: nil)
@@ -400,8 +422,8 @@ private struct SplitInfoSquare: View {
                         }
                         ScrollView {
                             VStack {
-                                ForEach(splitManager.splits.keys.sorted(), id: \.self) { split in
-                                    Button(action: {
+                                ForEach(splitManager.sortedSplitsByLastModifiedDate(), id: \.self) { split in
+                                    Button(split) {
                                         updateSplit(split, pInZone: percentInZone)
                                         popupManager.dismissPopup()
                                     }) {
@@ -414,6 +436,12 @@ private struct SplitInfoSquare: View {
                                             .background(Color.gray)
                                             .cornerRadius(8)
                                     }
+                                    .bold()
+                                    .foregroundColor(Color.primary)
+                                    .padding()
+                                    .frame(maxWidth: .infinity)
+                                    .background(Color.gray)
+                                    .cornerRadius(8)
                                 }
                             }
                             .frame(maxWidth: .infinity) 
