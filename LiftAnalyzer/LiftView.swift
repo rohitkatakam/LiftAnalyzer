@@ -423,31 +423,26 @@ private struct SplitInfoSquare: View {
                         ScrollView {
                             VStack {
                                 ForEach(splitManager.sortedSplitsByLastModifiedDate(), id: \.self) { split in
-                                    Button(split) {
+                                    Button(action: {
                                         updateSplit(split, pInZone: percentInZone)
                                         popupManager.dismissPopup()
                                     }) {
-                                        // Use Text as the button label and expand its tappable area with Spacer or GeometryReader if needed
                                         Text(split)
                                             .bold()
-                                            .frame(maxWidth: .infinity, minHeight: 36) // Ensure there's a minimum hit area
                                             .foregroundColor(Color.primary)
-                                            .padding(5)
-                                            .background(Color.gray)
-                                            .cornerRadius(8)
+                                            .padding()
+                                            .frame(maxWidth: .infinity)  // Apply maxWidth here within the button's content
+                                            .background(Color.gray)      // Background applies to the Text and padding
                                     }
-                                    .bold()
-                                    .foregroundColor(Color.primary)
-                                    .padding()
-                                    .frame(maxWidth: .infinity)
-                                    .background(Color.gray)
-                                    .cornerRadius(8)
+                                    .cornerRadius(15)  // Apply cornerRadius to the Button itself
+                                    .frame(maxWidth: .infinity)  // Ensure Button frame fills the space
                                 }
                             }
-                            .frame(maxWidth: .infinity) 
+                            .frame(maxWidth: .infinity)
                         }
-                        .cornerRadius(8)
+                        .cornerRadius(15)
                         .frame(maxWidth: .infinity)
+
                     }
                         .environmentObject(popupManager)
                     popupManager.animatePopup()

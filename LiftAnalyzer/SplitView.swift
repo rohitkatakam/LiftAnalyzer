@@ -81,51 +81,51 @@ struct SplitView: View {
                             )
                         }
                     }
-                    HStack(spacing: 2) {
-                        Text("Showing averages since")
-                            .font(.body)
-                            .fontWeight(.semibold)
-                        Button(action: {
-                            let popupView = PopupView {
-                                VStack {
-                                    Text("Timeframe")
-                                        .font(.title)
-                                        .fontWeight(.heavy)
-                                        .foregroundColor(Color.primary)
-                                    DatePicker(
-                                        "Filter workouts from:",
-                                        selection: $selectedStartDate,
-                                        in: ...Date(),
-                                        displayedComponents: .date
-                                    )
-                                    .datePickerStyle(.graphical)
-                                    .frame(maxWidth: .infinity)
-                                }
-                                .frame(maxWidth: .infinity)
-                            }
-                                .environmentObject(popupManager)
-                            popupManager.animatePopup()
-                            let popupViewController = PopupHostingController(rootView: popupView)
-                            popupViewController.view.backgroundColor = .clear
-                            popupViewController.modalPresentationStyle = .overCurrentContext
-                            popupViewController.modalTransitionStyle = .crossDissolve
-                            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-                               let rootViewController = windowScene.windows.first?.rootViewController {
-                                rootViewController.present(popupViewController, animated: true, completion: nil)
-                            }
-                        }) {
-                            HStack(spacing: 2) {
-                                Text("\(selectedStartDate, formatter: itemFormatter)")
-                                    .font(.body)
-                                    .fontWeight(.semibold)
-                                    .foregroundColor(.primary)
-                                Image(systemName: "chevron.down.circle.fill")
-                                    .foregroundStyle(.gray)
-                            }
-                        }
-                    }
                     
                     if !workouts.isEmpty {
+                        HStack(spacing: 2) {
+                            Text("Showing averages since")
+                                .font(.body)
+                                .fontWeight(.semibold)
+                            Button(action: {
+                                let popupView = PopupView {
+                                    VStack {
+                                        Text("Timeframe")
+                                            .font(.title)
+                                            .fontWeight(.heavy)
+                                            .foregroundColor(Color.primary)
+                                        DatePicker(
+                                            "Filter workouts from:",
+                                            selection: $selectedStartDate,
+                                            in: ...Date(),
+                                            displayedComponents: .date
+                                        )
+                                        .datePickerStyle(.graphical)
+                                        .frame(maxWidth: .infinity)
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                }
+                                    .environmentObject(popupManager)
+                                popupManager.animatePopup()
+                                let popupViewController = PopupHostingController(rootView: popupView)
+                                popupViewController.view.backgroundColor = .clear
+                                popupViewController.modalPresentationStyle = .overCurrentContext
+                                popupViewController.modalTransitionStyle = .crossDissolve
+                                if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                                   let rootViewController = windowScene.windows.first?.rootViewController {
+                                    rootViewController.present(popupViewController, animated: true, completion: nil)
+                                }
+                            }) {
+                                HStack(spacing: 2) {
+                                    Text("\(selectedStartDate, formatter: itemFormatter)")
+                                        .font(.body)
+                                        .fontWeight(.semibold)
+                                        .foregroundColor(.primary)
+                                    Image(systemName: "chevron.down.circle.fill")
+                                        .foregroundStyle(.gray)
+                                }
+                            }
+                        }
                         VStack {
                             //First row of InfoSquares (Count, Duration, Heart Rate)
                             InfoSquare(title: "Count", value: "\(workoutsInTimeFrame())", color: .primary)
@@ -165,24 +165,28 @@ struct SplitView: View {
                             }
                             .padding(.top, 2)
                         }
-                    }
-                    
-                    Text("All Lifts")
-                        .font(.title3)
-                        .fontWeight(.semibold)
-                        .padding([.top])
-                    
-                    ForEach(workoutDataManager.workouts.indices, id: \.self) { index in
-                        let workoutData = workoutDataManager.workouts[index]
-                        // Check if this workoutData is within the filteredWorkouts range
-                        if filteredWorkouts.contains(where: { $0.startDate == workoutData.workout.startDate }) {
-                            NavigationLink(destination: LiftView(workoutData: Binding(
-                                get: { workoutDataManager.workouts[index] },
-                                set: { workoutDataManager.workouts[index] = $0 }
-                            ))) {
-                                Text("\(workoutData.workout.startDate, formatter: itemFormatter)")
+                        Text("All Lifts")
+                            .font(.title3)
+                            .fontWeight(.semibold)
+                            .padding([.top])
+                        
+                        ForEach(workoutDataManager.workouts.indices, id: \.self) { index in
+                            let workoutData = workoutDataManager.workouts[index]
+                            // Check if this workoutData is within the filteredWorkouts range
+                            if filteredWorkouts.contains(where: { $0.startDate == workoutData.workout.startDate }) {
+                                NavigationLink(destination: LiftView(workoutData: Binding(
+                                    get: { workoutDataManager.workouts[index] },
+                                    set: { workoutDataManager.workouts[index] = $0 }
+                                ))) {
+                                    Text("\(workoutData.workout.startDate, formatter: itemFormatter)")
+                                }
                             }
                         }
+                    }
+                    else {
+                        Text("Edit the split on a lift page so it shows up here!")
+                            .font(.title3)
+                            .fontWeight(.semibold)
                     }
                 }
                 .padding([.leading, .trailing, .bottom])
