@@ -423,21 +423,26 @@ private struct SplitInfoSquare: View {
                         ScrollView {
                             VStack {
                                 ForEach(splitManager.sortedSplitsByLastModifiedDate(), id: \.self) { split in
-                                    Button(split) {
+                                    Button(action: {
                                         updateSplit(split, pInZone: percentInZone)
                                         popupManager.dismissPopup()
+                                    }) {
+                                        Text(split)
+                                            .bold()
+                                            .foregroundColor(Color.primary)
+                                            .padding()
+                                            .frame(maxWidth: .infinity)  // Apply maxWidth here within the button's content
+                                            .background(Color.gray)      // Background applies to the Text and padding
                                     }
-                                    .bold()
-                                    .foregroundColor(Color.primary)
-                                    .padding()
-                                    .frame(maxWidth: .infinity)
-                                    .background(Color.gray)
-                                    .cornerRadius(8)
+                                    .cornerRadius(15)  // Apply cornerRadius to the Button itself
+                                    .frame(maxWidth: .infinity)  // Ensure Button frame fills the space
                                 }
                             }
-                            .frame(maxWidth: .infinity) 
+                            .frame(maxWidth: .infinity)
                         }
+                        .cornerRadius(15)
                         .frame(maxWidth: .infinity)
+
                     }
                         .environmentObject(popupManager)
                     popupManager.animatePopup()
