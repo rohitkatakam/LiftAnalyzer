@@ -60,6 +60,9 @@ struct HomepageView: View {
 
                         // Scrollable section for workouts
                         ScrollViewWrapper(itemCount: workoutDataManager.workouts.count) {
+                            if let liveWorkout = workoutDataManager.currentWorkout {
+                                WorkoutView(workoutData: liveWorkout)
+                            }
                             ForEach(workoutDataManager.workouts, id: \.workout.uuid) { workoutData in
                                 NavigationLink(destination: LiftView(workoutData: Binding(
                                     get: { workoutData },
