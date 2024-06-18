@@ -38,6 +38,7 @@ struct HomepageView: View {
                                             .fontWeight(.medium)
                                             .foregroundColor(Color.primary)
                                         }
+                                        .cornerRadius(8)
                                     }
                                     .frame(maxWidth: .infinity)
                                 }
