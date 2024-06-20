@@ -7,6 +7,7 @@
 
 import SwiftUI
 import HealthKit
+import CoreML
 
 struct StoredWorkout: Codable {
     let startDate: Date
@@ -30,9 +31,20 @@ class SplitManager: ObservableObject {
             saveSplits()
         }
     }
+    private var healthStore: HKHealthStore?
+    private var classifierModel: SplitClassifier?
     
     init() {
         loadSplits()
+        if HKHealthStore.isHealthDataAvailable() {
+            healthStore = HKHealthStore()
+            // Request authorization and fetch initial data
+        }
+        self.classifierModel = try? SplitClassifier(configuration: .init())
+//      printSplits()
+//        predictSplit(for: splits["Sarms"]![0]) { predictedSplit in
+//            print("Predicted Split: \(predictedSplit ?? "No prediction")")
+//        }
     }
 
     private func saveSplits() {
@@ -133,5 +145,81 @@ class SplitManager: ObservableObject {
             return lastWorkoutDate1 > lastWorkoutDate2
         }
     }
+    
+    func fetchHeartRateTimeSeries(for workout: StoredWorkout, completion: @escaping ([Double]) -> Void) {
+            guard let healthStore = healthStore,
+                  let startDate = Calendar.current.date(byAdding: .second, value: -Int(workout.duration), to: workout.startDate),
+                  let endDate = Calendar.current.date(byAdding: .second, value: Int(workout.duration), to: workout.startDate),
+                  let heartRateType = HKQuantityType.quantityType(forIdentifier: .heartRate) else {
+                completion([])
+                return
+            }
 
+            let predicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: .strictStartDate)
+            let query = HKSampleQuery(sampleType: heartRateType, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: nil) { _, samples, _ in
+                DispatchQueue.main.async {
+                    guard let samples = samples as? [HKQuantitySample], !samples.isEmpty else {
+                        completion([])
+                        return
+                    }
+
+                    let heartRates = samples.map { $0.quantity.doubleValue(for: HKUnit(from: "count/min")) }
+                    completion(heartRates)
+                }
+            }
+
+            healthStore.execute(query)
+        }
+//    
+//    func printSplits() {
+//            var csvString = "split,startDate,duration,totalEnergyBurned,totalDistance,averageHeartRate,percentInZone,minHR,maxHR,stdHR\n"
+//            let group = DispatchGroup()
+//
+//            for split in splits {
+//                for workout in split.value {
+//                    group.enter()
+//                    fetchHeartRateTimeSeries(for: workout) { heartRateTimeSeries in
+//                        let dateString = ISO8601DateFormatter().string(from: workout.startDate)
+//                        let minHR = heartRateTimeSeries.min() ?? 0
+//                        let maxHR = heartRateTimeSeries.max() ?? 0
+//                        let stdHR = heartRateTimeSeries.isEmpty ? 0 : sqrt(heartRateTimeSeries.reduce(0) { $0 + pow($1 - workout.averageHeartRate, 2) } / Double(heartRateTimeSeries.count))
+//                        csvString += "\(split.key),\(dateString),\(workout.duration),\(workout.totalEnergyBurned),\(workout.totalDistance),\(workout.averageHeartRate),\(workout.percentInZone),\(minHR),\(maxHR),\(stdHR)\n"
+//                        group.leave()
+//                    }
+//                }
+//            }
+//
+//            group.notify(queue: .main) {
+//                print(csvString)
+//            }
+//        }
+    
+    func predictSplit(for workout: StoredWorkout, completion: @escaping (String?) -> Void) {
+        guard let classifierModel = classifierModel else {
+            completion(nil)
+            return
+        }
+        
+        fetchHeartRateTimeSeries(for: workout) { heartRateTimeSeries in
+            let minHR = heartRateTimeSeries.min() ?? 0
+            let maxHR = heartRateTimeSeries.max() ?? 0
+            let stdHR = heartRateTimeSeries.isEmpty ? 0 : sqrt(heartRateTimeSeries.reduce(0) { $0 + pow($1 - workout.averageHeartRate, 2) } / Double(heartRateTimeSeries.count))
+            
+            let input = SplitClassifierInput(
+                duration: workout.duration,
+                totalEnergyBurned: workout.totalEnergyBurned,
+                averageHeartRate: workout.averageHeartRate,
+                percentInZone: workout.percentInZone,
+                minHR: minHR,
+                maxHR: maxHR,
+                stdHR: stdHR
+            )
+            
+            if let prediction = try? classifierModel.prediction(input: input) {
+                completion(prediction.split)
+            } else {
+                completion(nil)
+            }
+        }
+    }
 }

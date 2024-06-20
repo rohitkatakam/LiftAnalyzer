@@ -18,7 +18,7 @@ class WorkoutDataManager: ObservableObject {
     private var healthStore: HKHealthStore?
     private var splitManager: SplitManager?
     @Published var workouts: [WorkoutData] = []
-    @Published var currentWorkout: WorkoutData?
+
     private var cancellables = Set<AnyCancellable>()
     
     init(splitManager: SplitManager) {
@@ -35,7 +35,6 @@ class WorkoutDataManager: ObservableObject {
         NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
             .sink { [weak self] _ in
                 self?.fetchWorkouts()
-                self?.startObservingLiveWorkouts()
             }
             .store(in: &cancellables)
     }
@@ -161,40 +160,7 @@ class WorkoutDataManager: ObservableObject {
         }
     }
     
-    func startObservingLiveWorkouts() {
-        let workoutType = HKObjectType.workoutType()
-        let predicate = HKQuery.predicateForSamples(withStart: Date(), end: nil, options: .strictStartDate)
 
-        let query = HKAnchoredObjectQuery(type: workoutType, predicate: predicate, anchor: nil, limit: HKObjectQueryNoLimit) {
-            [weak self] (query, addedSamples, deletedSamples, newAnchor, error) in
-
-            guard let self = self, error == nil else {
-                print("Failed to fetch workouts: \(error?.localizedDescription ?? "Unknown error")")
-                return
-            }
-
-            if let workouts = addedSamples as? [HKWorkout], !workouts.isEmpty {
-                DispatchQueue.main.async {
-                    self.currentWorkout = workouts.map { WorkoutData(split: nil, workout: $0) }.first
-                }
-            }
-        }
-
-        query.updateHandler = { [weak self] (query, addedSamples, deletedSamples, newAnchor, error) in
-            guard let self = self, error == nil else {
-                print("Failed to update workouts: \(error?.localizedDescription ?? "Unknown error")")
-                return
-            }
-
-            if let workouts = addedSamples as? [HKWorkout], !workouts.isEmpty {
-                DispatchQueue.main.async {
-                    self.currentWorkout = workouts.map { WorkoutData(split: nil, workout: $0) }.first
-                }
-            }
-        }
-
-        healthStore?.execute(query)
-    }
 
 
     deinit {
