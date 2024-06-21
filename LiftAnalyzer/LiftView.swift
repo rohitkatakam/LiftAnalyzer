@@ -47,7 +47,7 @@ struct LiftView: View {
                             .font(.largeTitle)
                             .fontWeight(.semibold)
                         
-                        SplitInfoSquare(workoutData: $workoutData, showDropDown: $showDropDown, percentInZone: percentInZone ?? 0)
+                        SplitInfoSquare(workoutData: $workoutData, showDropDown: $showDropDown, percentInZone: percentInZone ?? 0, averageHeartRate: averageHeartRate ?? 0)
                         InfoSquare(title: "Duration", value: formatDuration(Int(workoutData.workout.duration.rounded())), color: .red)
                         InfoSquare(title: "Avg. Heart Rate", value: averageHeartRate != nil ? "\(Int(averageHeartRate!.rounded())) bpm" : "Fetching...", color: .orange)
                         InfoSquare(title: "Energy Burned", value: "\(Int(workoutData.workout.totalEnergyBurned?.doubleValue(for: .kilocalorie()).rounded() ?? 0)) kcal", color: .indigo)
@@ -395,6 +395,7 @@ private struct SplitInfoSquare: View {
     @Binding var workoutData: WorkoutData
     @Binding var showDropDown: Bool
     var percentInZone: Double
+    var averageHeartRate: Double
 
     var body: some View {
         HStack {
@@ -461,10 +462,30 @@ private struct SplitInfoSquare: View {
                 }
             }
             Spacer()
-            Text(workoutData.split ?? "NO SPLIT")
-                .font(.body)
-                .fontWeight(.medium)
-                .foregroundColor(workoutData.split == nil ? Color.red : Color.primary)
+//            Text(workoutData.split ?? "NO SPLIT")
+//                .font(.body)
+//                .fontWeight(.medium)
+//                .foregroundColor(workoutData.split == nil ? Color.red : Color.primary)
+            var predicted = false
+            if let split = workoutData.split, !split.isEmpty && split != "NO SPLIT" {
+                Text(split)
+                    .font(.body)
+                    .fontWeight(.medium)
+                    .foregroundColor(predicted ? Color.red : Color.primary)  // Use predicted flag to determine text color
+            } else {
+                Text("Predicting...")
+                    .font(.body)
+                    .fontWeight(.medium)
+                    .onAppear {
+                        splitManager.predictSplit(for: workoutData.toStoredWorkout(avgHeartRate: averageHeartRate, pInZone: percentInZone)) { predictedSplit in
+                            DispatchQueue.main.async {
+                                predicted = predictedSplit != nil  // Update predicted flag based on the prediction result
+                                workoutData.split = predictedSplit != nil ? "Prediction: \(predictedSplit ?? "")?" : "NO SPLIT"
+                            }
+                        }
+                    }
+                    .foregroundColor(predicted ? Color.red : Color.gray)  // Use predicted flag to determine text color
+            }
         }
         .padding()
         .background(Color.gray.opacity(0.2))

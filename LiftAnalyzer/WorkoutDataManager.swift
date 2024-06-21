@@ -14,6 +14,19 @@ struct WorkoutData {
     var workout : HKWorkout
 }
 
+extension WorkoutData {
+    func toStoredWorkout(avgHeartRate: Double, pInZone: Double) -> StoredWorkout {
+        return StoredWorkout(
+            startDate: workout.startDate,
+            duration: workout.duration,
+            totalEnergyBurned: workout.totalEnergyBurned?.doubleValue(for: .kilocalorie()) ?? 0,
+            totalDistance: workout.totalDistance?.doubleValue(for: .meter()) ?? 0,
+            averageHeartRate: avgHeartRate,
+            percentInZone: pInZone
+        )
+    }
+}
+
 class WorkoutDataManager: ObservableObject {
     private var healthStore: HKHealthStore?
     private var splitManager: SplitManager?

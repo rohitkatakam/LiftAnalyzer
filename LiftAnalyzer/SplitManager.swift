@@ -132,6 +132,7 @@ class SplitManager: ObservableObject {
         // Add the workout to the new split, if provided
         if let newSplit = newSplit {
             splits[newSplit, default: []].append(storedWorkout)
+            updateTrainingData(with: storedWorkout, for: newSplit)
         }
         workoutDataManager.updateWorkoutSplits(from: self)
     }
@@ -171,7 +172,7 @@ class SplitManager: ObservableObject {
             healthStore.execute(query)
         }
 //    
-//    func printSplits() {
+//    func printSplits(completion: @escaping (String) -> Void) {
 //            var csvString = "split,startDate,duration,totalEnergyBurned,totalDistance,averageHeartRate,percentInZone,minHR,maxHR,stdHR\n"
 //            let group = DispatchGroup()
 //
@@ -220,6 +221,67 @@ class SplitManager: ObservableObject {
             } else {
                 completion(nil)
             }
+        }
+    }
+    
+    private func updateTrainingData(with workout: StoredWorkout, for split: String) {
+        fetchHeartRateTimeSeries(for: workout) { heartRateTimeSeries in
+            // Calculate heart rate metrics
+            let minHR = heartRateTimeSeries.min() ?? 0
+            let maxHR = heartRateTimeSeries.max() ?? 0
+            let stdHR = heartRateTimeSeries.isEmpty ? 0 : sqrt(heartRateTimeSeries.reduce(0) { $0 + pow($1 - workout.averageHeartRate, 2) } / Double(heartRateTimeSeries.count))
+            
+            // Convert to CSV format
+            let dateString = ISO8601DateFormatter().string(from: workout.startDate)
+            let csvLine = "\(split),\(dateString),\(workout.duration),\(workout.totalEnergyBurned),\(workout.totalDistance),\(workout.averageHeartRate),\(workout.percentInZone),\(minHR),\(maxHR),\(stdHR)\n"
+            
+            // Append to CSV file
+            self.appendToCSVFile(csvLine)
+        }
+    }
+    
+    private func appendToCSVFile(_ csvLine: String) {
+        let fileManager = FileManager.default
+        guard let documentDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            print("Error accessing the document directory.")
+            return
+        }
+        let trainingDataURL = documentDirectory.appendingPathComponent("Training.csv")
+
+        // Check if the file exists
+        if !fileManager.fileExists(atPath: trainingDataURL.path) {
+            // Create the file with headers if it doesn't exist
+            do {
+                let headers = "split,startDate,duration,totalEnergyBurned,totalDistance,averageHeartRate,percentInZone,minHR,maxHR,stdHR\n"
+                try headers.write(to: trainingDataURL, atomically: true, encoding: .utf8)
+            } catch {
+                print("Error creating Training.csv file: \(error)")
+                return
+            }
+        }
+
+        // Read the existing CSV content
+        var csvContent = ""
+        do {
+            csvContent = try String(contentsOf: trainingDataURL, encoding: .utf8)
+        } catch {
+            print("Error reading Training.csv file: \(error)")
+            return
+        }
+        // Remove the existing line for the workout, if present
+        var updatedContent = csvContent.components(separatedBy: .newlines)
+            .filter { !$0.isEmpty && !$0.contains(csvLine.components(separatedBy: ",")[1]) }
+            .joined(separator: "\n")
+
+        // Append the new line to the file
+        updatedContent.append("\n\(csvLine)")
+        print(trainingDataURL)
+        // Write the updated CSV content back to the file
+        do {
+            try updatedContent.write(to: trainingDataURL, atomically: true, encoding: .utf8)
+        } catch {
+            print("Error writing to Training.csv file: \(error)")
+            return
         }
     }
 }
