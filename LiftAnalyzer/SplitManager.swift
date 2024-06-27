@@ -290,14 +290,6 @@ class SplitManager: ObservableObject {
     }
     
     private func trainClassifier(trainingDataURL: URL) {
-        var csvContent = ""
-        do {
-            csvContent = try String(contentsOf: trainingDataURL, encoding: .utf8)
-        } catch {
-            print("Error reading Training.csv file: \(error)")
-            return
-        }
-        print(csvContent)
         do {
             let dataTable = try MLDataTable(contentsOf: trainingDataURL)
             let columns = ["split", "duration", "totalEnergyBurned", "averageHeartRate", "percentInZone", "minHR", "maxHR", "stdHR"]
@@ -321,20 +313,24 @@ class SplitManager: ObservableObject {
         do {
             try classifier.write(to: modelURL)
             print("Classifier saved successfully at: \(modelURL)")
-            self.classifierModel = try? SplitClassifier(contentsOf: modelURL)
+            let compiledURL = try MLModel.compileModel(at: modelURL)
+            print("Model compiled successfully at URL:\(compiledURL)")
+            let compiledDestinationURL = documentsDirectory.appendingPathComponent("SplitClassifier.mlmodelc")
+            try FileManager.default.copyItem(at: compiledURL, to: compiledDestinationURL)
+            print("Compiled model copied to: \(compiledDestinationURL)")
+            self.classifierModel = try? SplitClassifier(contentsOf: compiledURL)
         } catch {
-            print("Error saving classifier: \(error)")
+            print("Error saving or compiling classifier: \(error)")
         }
     }
     
     private func loadTrainedClassifier() -> SplitClassifier? {
-        return try? SplitClassifier(configuration: .init())
         guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
             print("Error accessing the documents directory.")
             return nil
         }
 
-        let modelURL = documentsDirectory.appendingPathComponent("SplitClassifier.mlmodel")
+        let modelURL = documentsDirectory.appendingPathComponent("SplitClassifier.mlmodelc")
 
         do {
             let classifier = try SplitClassifier(contentsOf: modelURL)
