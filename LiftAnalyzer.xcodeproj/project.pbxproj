@@ -15,6 +15,9 @@
 		324F8B1B2B2B0EC000701E40 /* LiftAnalyzerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324F8B1A2B2B0EC000701E40 /* LiftAnalyzerTests.swift */; };
 		324F8B252B2B0EC000701E40 /* LiftAnalyzerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324F8B242B2B0EC000701E40 /* LiftAnalyzerUITests.swift */; };
 		324F8B272B2B0EC000701E40 /* LiftAnalyzerUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324F8B262B2B0EC000701E40 /* LiftAnalyzerUITestsLaunchTests.swift */; };
+		3296C8B72C2DEEE800C6C28A /* TestTrain.csv in Resources */ = {isa = PBXBuildFile; fileRef = 3296C8B62C2DEEE800C6C28A /* TestTrain.csv */; };
+		3296C8B82C2DEEE800C6C28A /* TestTrain.csv in Resources */ = {isa = PBXBuildFile; fileRef = 3296C8B62C2DEEE800C6C28A /* TestTrain.csv */; };
+		3296C8B92C2DEEE800C6C28A /* TestTrain.csv in Resources */ = {isa = PBXBuildFile; fileRef = 3296C8B62C2DEEE800C6C28A /* TestTrain.csv */; };
 		329874082C248CE500CA1259 /* SplitClassifier.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 329874062C248CE500CA1259 /* SplitClassifier.mlmodel */; };
 		329874092C248CE500CA1259 /* SplitClassifier.mlproj in Resources */ = {isa = PBXBuildFile; fileRef = 329874072C248CE500CA1259 /* SplitClassifier.mlproj */; };
 		329874102C24CA4D00CA1259 /* Training.csv in Resources */ = {isa = PBXBuildFile; fileRef = 3298740F2C24CA4D00CA1259 /* Training.csv */; };
@@ -56,6 +59,7 @@
 		324F8B242B2B0EC000701E40 /* LiftAnalyzerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiftAnalyzerUITests.swift; sourceTree = "<group>"; };
 		324F8B262B2B0EC000701E40 /* LiftAnalyzerUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiftAnalyzerUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		324F8B332B2B113700701E40 /* LiftAnalyzer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LiftAnalyzer.entitlements; sourceTree = "<group>"; };
+		3296C8B62C2DEEE800C6C28A /* TestTrain.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TestTrain.csv; sourceTree = "<group>"; };
 		329874062C248CE500CA1259 /* SplitClassifier.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = SplitClassifier.mlmodel; sourceTree = "<group>"; };
 		329874072C248CE500CA1259 /* SplitClassifier.mlproj */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SplitClassifier.mlproj; sourceTree = "<group>"; };
 		3298740F2C24CA4D00CA1259 /* Training.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = Training.csv; sourceTree = "<group>"; };
@@ -165,6 +169,7 @@
 		3298740A2C249A9700CA1259 /* Documents */ = {
 			isa = PBXGroup;
 			children = (
+				3296C8B62C2DEEE800C6C28A /* TestTrain.csv */,
 			);
 			path = Documents;
 			sourceTree = "<group>";
@@ -277,6 +282,7 @@
 				329874092C248CE500CA1259 /* SplitClassifier.mlproj in Resources */,
 				329874102C24CA4D00CA1259 /* Training.csv in Resources */,
 				324F8B0E2B2B0EC000701E40 /* Assets.xcassets in Resources */,
+				3296C8B72C2DEEE800C6C28A /* TestTrain.csv in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -284,6 +290,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3296C8B82C2DEEE800C6C28A /* TestTrain.csv in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -291,6 +298,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3296C8B92C2DEEE800C6C28A /* TestTrain.csv in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -398,7 +406,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -453,7 +461,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;

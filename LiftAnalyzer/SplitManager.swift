@@ -8,6 +8,9 @@
 import SwiftUI
 import HealthKit
 import CoreML
+import Foundation
+import TabularData
+import CreateML
 
 struct StoredWorkout: Codable {
     let startDate: Date
@@ -40,11 +43,12 @@ class SplitManager: ObservableObject {
             healthStore = HKHealthStore()
             // Request authorization and fetch initial data
         }
-        self.classifierModel = try? SplitClassifier(configuration: .init())
+        self.classifierModel = loadTrainedClassifier()
 //      printSplits()
 //        predictSplit(for: splits["Sarms"]![0]) { predictedSplit in
 //            print("Predicted Split: \(predictedSplit ?? "No prediction")")
 //        }
+//        trainClassifier()
     }
 
     private func saveSplits() {
@@ -275,13 +279,70 @@ class SplitManager: ObservableObject {
 
         // Append the new line to the file
         updatedContent.append("\n\(csvLine)")
-        print(trainingDataURL)
         // Write the updated CSV content back to the file
         do {
             try updatedContent.write(to: trainingDataURL, atomically: true, encoding: .utf8)
         } catch {
             print("Error writing to Training.csv file: \(error)")
             return
+        }
+        trainClassifier(trainingDataURL: trainingDataURL)
+    }
+    
+    private func trainClassifier(trainingDataURL: URL) {
+        var csvContent = ""
+        do {
+            csvContent = try String(contentsOf: trainingDataURL, encoding: .utf8)
+        } catch {
+            print("Error reading Training.csv file: \(error)")
+            return
+        }
+        print(csvContent)
+        do {
+            let dataTable = try MLDataTable(contentsOf: trainingDataURL)
+            let columns = ["split", "duration", "totalEnergyBurned", "averageHeartRate", "percentInZone", "minHR", "maxHR", "stdHR"]
+            let filteredTable = dataTable[columns]
+            let randomForest = try MLRandomForestClassifier(trainingData: filteredTable, targetColumn: "split")
+            
+            saveTrainedClassifier(randomForest)
+        } catch {
+            print("Error training classifier")
+        }
+    }
+    
+    private func saveTrainedClassifier(_ classifier: MLRandomForestClassifier) {
+        guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            print("Error accessing the documents directory.")
+            return
+        }
+
+        let modelURL = documentsDirectory.appendingPathComponent("SplitClassifier.mlmodel")
+
+        do {
+            try classifier.write(to: modelURL)
+            print("Classifier saved successfully at: \(modelURL)")
+            self.classifierModel = try? SplitClassifier(contentsOf: modelURL)
+        } catch {
+            print("Error saving classifier: \(error)")
+        }
+    }
+    
+    private func loadTrainedClassifier() -> SplitClassifier? {
+        return try? SplitClassifier(configuration: .init())
+        guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            print("Error accessing the documents directory.")
+            return nil
+        }
+
+        let modelURL = documentsDirectory.appendingPathComponent("SplitClassifier.mlmodel")
+
+        do {
+            let classifier = try SplitClassifier(contentsOf: modelURL)
+            print("Classifier loaded successfully from: \(modelURL)")
+            return classifier
+        } catch {
+            print("Error loading classifier: \(error)")
+            return nil
         }
     }
 }
