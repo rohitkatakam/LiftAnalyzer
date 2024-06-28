@@ -34,6 +34,7 @@ class SplitManager: ObservableObject {
             saveSplits()
         }
     }
+    
     private var healthStore: HKHealthStore?
     private var classifierModel: SplitClassifier?
     
@@ -313,14 +314,36 @@ class SplitManager: ObservableObject {
         do {
             try classifier.write(to: modelURL)
             print("Classifier saved successfully at: \(modelURL)")
-            let compiledURL = try MLModel.compileModel(at: modelURL)
-            print("Model compiled successfully at URL:\(compiledURL)")
-            let compiledDestinationURL = documentsDirectory.appendingPathComponent("SplitClassifier.mlmodelc")
-            try FileManager.default.copyItem(at: compiledURL, to: compiledDestinationURL)
-            print("Compiled model copied to: \(compiledDestinationURL)")
-            self.classifierModel = try? SplitClassifier(contentsOf: compiledURL)
+
+            // Perform compilation asynchronously
+            DispatchQueue.global().async {
+                do {
+                    let compiledURL = try MLModel.compileModel(at: modelURL)
+                    print("Model compiled successfully at URL: \(compiledURL)")
+
+                    // Destination URL for compiled model
+                    let compiledDestinationURL = documentsDirectory.appendingPathComponent("SplitClassifier.mlmodelc")
+
+                    // Check if file already exists
+                    if FileManager.default.fileExists(atPath: compiledDestinationURL.path) {
+                        // If file exists, remove it before copying
+                        try FileManager.default.removeItem(at: compiledDestinationURL)
+                    }
+
+                    // Copy compiled model to destination
+                    try FileManager.default.copyItem(at: compiledURL, to: compiledDestinationURL)
+                    print("Compiled model copied to: \(compiledDestinationURL)")
+
+                    // Initialize classifier with the compiled model URL on the main thread
+                    DispatchQueue.main.async {
+                        self.classifierModel = try? SplitClassifier(contentsOf: compiledDestinationURL)
+                    }
+                } catch {
+                    print("Error saving or compiling classifier: \(error)")
+                }
+            }
         } catch {
-            print("Error saving or compiling classifier: \(error)")
+            print("Error saving classifier: \(error)")
         }
     }
     
