@@ -18,6 +18,7 @@ struct SplitView: View {
     //@State private var selectedTimeframe = "one month"
     //private let timeframes = ["one week", "one month", "three months", "six months", "one year", "all time"]
     @State private var showingDeleteAlert = false
+    @State private var predictedStats: [String: Double] = [:]
     
     //filter workouts by timeframe
     private var filteredWorkouts: [StoredWorkout] {
@@ -84,7 +85,7 @@ struct SplitView: View {
                     
                     if !workouts.isEmpty {
                         HStack(spacing: 2) {
-                            Text("Showing averages since")
+                            Text("Averages since")
                                 .font(.body)
                                 .fontWeight(.semibold)
                             Button(action: {
@@ -165,8 +166,32 @@ struct SplitView: View {
                             }
                             .padding(.top, 2)
                         }
+                        
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("AI Benchmarks for Next Workout")
+                                .font(.body)
+                                .fontWeight(.semibold)
+
+                            if let duration = predictedStats["duration"] {
+                                InfoSquare(title: "Duration", value: formatDuration(Int(duration.rounded())), color: .red)
+                            }
+                            
+                            if let heartRate = predictedStats["averageHeartRate"] {
+                                InfoSquare(title: "Heart Rate", value: "\(Int(heartRate)) bpm", color: .orange)
+                            }
+                            
+                            if let energyBurned = predictedStats["totalEnergyBurned"] {
+                                InfoSquare(title: "Energy Burned", value: "\(Int(energyBurned)) kcal", color: .indigo)
+                            }
+                            
+                            if let percentInZone = predictedStats["percentInZone"] {
+                                InfoSquare(title: "Percent in Zone", value: "\(Int(percentInZone * 100))%", color: .teal)
+                            }
+                        }
+                        .padding(.top, 10)
+
                         Text("All Lifts")
-                            .font(.title3)
+                            .font(.body)
                             .fontWeight(.semibold)
                             .padding([.top])
                         
@@ -185,12 +210,17 @@ struct SplitView: View {
                     }
                     else {
                         Text("Edit the split on a lift page so it shows up here!")
-                            .font(.title3)
+                            .font(.body)
                             .fontWeight(.semibold)
                     }
                 }
                 .padding([.leading, .trailing, .bottom])
                 Spacer()
+            }
+        }
+        .onAppear {
+            splitManager.predictStats(for: splitName) { stats in
+                self.predictedStats = stats
             }
         }
     }

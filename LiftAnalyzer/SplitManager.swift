@@ -288,6 +288,7 @@ class SplitManager: ObservableObject {
             return
         }
         trainClassifier(trainingDataURL: trainingDataURL)
+        trainAndSaveRegressors(trainingDataURL: trainingDataURL)
     }
     
     private func trainClassifier(trainingDataURL: URL) {
@@ -362,6 +363,111 @@ class SplitManager: ObservableObject {
         } catch {
             print("Error loading classifier: \(error)")
             return nil
+        }
+    }
+    
+    private func trainAndSaveRegressors(trainingDataURL: URL) {
+        do {
+            let dataTable = try MLDataTable(contentsOf: trainingDataURL)
+            let inputColumns = ["split"]
+            let targetColumns = ["duration", "totalEnergyBurned", "averageHeartRate", "percentInZone", "minHR", "maxHR", "stdHR"]
+
+            for targetColumn in targetColumns {
+                let filteredTable = dataTable[inputColumns + [targetColumn]]
+                let randomForest = try MLRandomForestRegressor(trainingData: filteredTable, targetColumn: targetColumn)
+
+                saveTrainedRegressor(randomForest, for: targetColumn)
+            }
+        } catch {
+            print("Error training regressors: \(error)")
+        }
+    }
+
+    private func saveTrainedRegressor(_ regressor: MLRandomForestRegressor, for targetColumn: String) {
+        guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            print("Error accessing the documents directory.")
+            return
+        }
+
+        let modelURL = documentsDirectory.appendingPathComponent("\(targetColumn)Regressor.mlmodel")
+
+        do {
+            try regressor.write(to: modelURL)
+            print("Regressor saved successfully at: \(modelURL)")
+
+            // Perform compilation asynchronously
+            DispatchQueue.global().async {
+                do {
+                    let compiledURL = try MLModel.compileModel(at: modelURL)
+                    print("Model compiled successfully at URL: \(compiledURL)")
+
+                    // Destination URL for compiled model
+                    let compiledDestinationURL = documentsDirectory.appendingPathComponent("\(targetColumn)Regressor.mlmodelc")
+
+                    // Check if file already exists
+                    if FileManager.default.fileExists(atPath: compiledDestinationURL.path) {
+                        // If file exists, remove it before copying
+                        try FileManager.default.removeItem(at: compiledDestinationURL)
+                    }
+
+                    // Copy compiled model to destination
+                    try FileManager.default.copyItem(at: compiledURL, to: compiledDestinationURL)
+                    print("Compiled model copied to: \(compiledDestinationURL)")
+                } catch {
+                    print("Error saving or compiling regressor: \(error)")
+                }
+            }
+        } catch {
+            print("Error saving regressor: \(error)")
+        }
+    }
+    
+    private func loadTrainedRegressor(for targetColumn: String) -> MLModel? {
+        guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            print("Error accessing the documents directory.")
+            return nil
+        }
+
+        let modelURL = documentsDirectory.appendingPathComponent("\(targetColumn)Regressor.mlmodelc")
+
+        do {
+            let regressor = try MLModel(contentsOf: modelURL)
+            print("Regressor loaded successfully from: \(modelURL)")
+            return regressor
+        } catch {
+            print("Error loading regressor: \(error)")
+            return nil
+        }
+    }
+    
+    func predictStats(for split: String, completion: @escaping ([String: Double]) -> Void) {
+        let targetColumns = ["duration", "totalEnergyBurned", "averageHeartRate", "percentInZone", "minHR", "maxHR", "stdHR"]
+        var predictions: [String: Double] = [:]
+
+        let group = DispatchGroup()
+
+        for targetColumn in targetColumns {
+            group.enter()
+
+            DispatchQueue.global().async {
+                if let regressor = self.loadTrainedRegressor(for: targetColumn) {
+                    do {
+                        let input = try MLDictionaryFeatureProvider(dictionary: ["split": split])
+                        let prediction = try regressor.prediction(from: input)
+                        if let predictedValue = prediction.featureValue(for: targetColumn)?.doubleValue {
+                            predictions[targetColumn] = predictedValue
+                        }
+                    } catch {
+                        print("Error predicting \(targetColumn): \(error)")
+                    }
+                }
+
+                group.leave()
+            }
+        }
+
+        group.notify(queue: .main) {
+            completion(predictions)
         }
     }
 }
