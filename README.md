@@ -4,7 +4,7 @@ Connects to Apple Health and uses data from Apple Watch workouts to summarize a 
 <img src="https://github.com/rohitkatakam/LiftAnalyzer/assets/104106645/b2b19374-9f2c-433a-baf4-a54f31c64afd" width=30% height=30%>
 <img src="https://github.com/rohitkatakam/LiftAnalyzer/assets/104106645/f065443a-671b-4d15-9564-7921fdc663b8" width=30% height=30%>
 <img src="https://github.com/rohitkatakam/LiftAnalyzer/assets/104106645/eb546ebf-f8da-4839-9a19-512349938f62" width=30% height=30%>  
-<img src="https://github.com/rohitkatakam/LiftAnalyzer/assets/104106645/1c3169a9-2db1-4f49-a36a-a76f2ff34ddc" width=30% height=30%>
+<img src="https://github.com/user-attachments/assets/afd1869a-13a9-4771-9c01-02c27e1ab0f0" width=30% height=30%>
 <img src="https://github.com/rohitkatakam/LiftAnalyzer/assets/104106645/0f229930-0b02-4bb3-adb5-4606132298bf" width=30% height=30%>
 <img src="https://github.com/rohitkatakam/LiftAnalyzer/assets/104106645/42ece28c-bb41-43e6-b744-3747270dc4d4" width=30% height=30%>
 <img src="https://github.com/rohitkatakam/LiftAnalyzer/assets/104106645/2405f714-1c8b-49e0-bab2-949392db5b1c" width=30% height=30%>
