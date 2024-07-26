@@ -396,6 +396,8 @@ private struct SplitInfoSquare: View {
     @Binding var showDropDown: Bool
     var percentInZone: Double
     var averageHeartRate: Double
+    @State private var predicted = false
+    @State private var guessSplit: String? = nil
 
     var body: some View {
         HStack {
@@ -462,16 +464,22 @@ private struct SplitInfoSquare: View {
                 }
             }
             Spacer()
-//            Text(workoutData.split ?? "NO SPLIT")
-//                .font(.body)
-//                .fontWeight(.medium)
-//                .foregroundColor(workoutData.split == nil ? Color.red : Color.primary)
-            var predicted = false
             if let split = workoutData.split, !split.isEmpty && split != "NO SPLIT" {
-                Text(split)
-                    .font(.body)
-                    .fontWeight(.medium)
-                    .foregroundColor(predicted ? Color.red : Color.primary)  // Use predicted flag to determine text color
+                HStack {
+                    Text(split)
+                        .font(.body)
+                        .fontWeight(.medium)
+                        .foregroundColor(Color.primary)  // Use predicted flag to determine text color
+                    if predicted {
+                        Button(action: {
+                            updateSplit(guessSplit, pInZone: percentInZone)
+                        }) {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundColor(.green)
+                                .imageScale(.large)
+                        }
+                    }
+                }
             } else {
                 Text("Predicting...")
                     .font(.body)
@@ -480,6 +488,7 @@ private struct SplitInfoSquare: View {
                         splitManager.predictSplit(for: workoutData.toStoredWorkout(avgHeartRate: averageHeartRate, pInZone: percentInZone)) { predictedSplit in
                             DispatchQueue.main.async {
                                 predicted = predictedSplit != nil  // Update predicted flag based on the prediction result
+                                guessSplit = predictedSplit
                                 workoutData.split = predictedSplit != nil ? "Prediction: \(predictedSplit ?? "")?" : "NO SPLIT"
                             }
                         }
@@ -496,6 +505,7 @@ private struct SplitInfoSquare: View {
         let workout = workoutData.workout
         splitManager.updateWorkoutSplit(workout: workout, newSplit: newSplit, pInZone: percentInZone, workoutDataManager: workoutDataManager)
         showDropDown = false
+        predicted = false
     }
 }
 
