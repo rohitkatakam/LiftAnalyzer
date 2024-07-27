@@ -10,6 +10,8 @@ import HealthKit
 import UIKit
 import Combine
 
+let hasSeenLiftTutorialKey = "hasSeenLiftTutorial"
+
 struct LiftView: View {
     @EnvironmentObject var splitManager: SplitManager
     @EnvironmentObject var workoutDataManager: WorkoutDataManager
@@ -43,9 +45,17 @@ struct LiftView: View {
             ZStack {
                 ScrollView {
                     VStack(alignment: .leading) {
-                        Text("\(headingFormatter.string(from: workoutData.workout.startDate))")
-                            .font(.largeTitle)
-                            .fontWeight(.semibold)
+                        HStack {
+                            Text("\(headingFormatter.string(from: workoutData.workout.startDate))")
+                                .font(.largeTitle)
+                                .fontWeight(.semibold)
+                            Button(action: {
+                                showLiftTutorialPopup()
+                            }) {
+                                Image(systemName: "info.circle.fill")
+                                    .foregroundStyle(.gray)
+                            }
+                        }
                         
                         SplitInfoSquare(workoutData: $workoutData, showDropDown: $showDropDown, percentInZone: percentInZone ?? 0, averageHeartRate: averageHeartRate ?? 0)
                         InfoSquare(title: "Duration", value: formatDuration(Int(workoutData.workout.duration.rounded())), color: .red)
@@ -99,9 +109,47 @@ struct LiftView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                 }
             }
+            .onAppear {
+                checkAndShowLiftTutorialPopup()
+            }
         }
-        
     }
+    
+    private func checkAndShowLiftTutorialPopup() {
+            if !UserDefaults.standard.bool(forKey: hasSeenLiftTutorialKey) {
+                showLiftTutorialPopup()
+                UserDefaults.standard.set(true, forKey: hasSeenLiftTutorialKey)
+            }
+    }
+    
+    private func showLiftTutorialPopup() {
+            DispatchQueue.main.async {
+                let popupView = PopupView {
+                    VStack {
+                        Text("Workout Page")
+                            .font(.title)
+                            .fontWeight(.heavy)
+                            .foregroundColor(Color.primary)
+                        Text("Classify this workout into one of your splits by tapping the pencil button. If a prediction can be made from your past workout data, that prediction will be displayed with a green checkmark next to it: press that checkmark if the model correctly predicted your workout split.")
+                            .font(.body)
+                            .fontWeight(.medium)
+                            .foregroundColor(Color.primary)
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                .environmentObject(popupManager)
+
+                popupManager.animatePopup()
+                let popupViewController = PopupHostingController(rootView: popupView)
+                popupViewController.view.backgroundColor = .clear
+                popupViewController.modalPresentationStyle = .overCurrentContext
+                popupViewController.modalTransitionStyle = .crossDissolve
+                if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                   let rootViewController = windowScene.windows.first?.rootViewController {
+                    rootViewController.present(popupViewController, animated: true, completion: nil)
+                }
+            }
+        }
     
 
     //function to fetch resting heart rate from HealthKit

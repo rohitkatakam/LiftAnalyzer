@@ -24,7 +24,7 @@ struct HomepageView: View {
                 ScrollView {
                     VStack(alignment: .leading) {
                         HStack(spacing: 2) {
-                            sectionHeader("Recent Lifts")
+                            sectionHeader("Recent Workouts")
                             Button(action: {
                                 let popupView = PopupView {
                                     VStack {
@@ -32,13 +32,10 @@ struct HomepageView: View {
                                             .font(.title)
                                             .fontWeight(.heavy)
                                             .foregroundColor(Color.primary)
-                                        ScrollView{
-                                            Text("Tap the plus button to add a split, tap on one of your recent workouts to edit the split for the workout and view stats for that lift. Tap on one of your created splits to view averages for that split. If no lifts are showing up, make sure you allow this app to access your health data in settings; also make sure you are recording \"Traditional Strength Training\" workouts on your Apple Watch.")
+                                        Text(buildAttributedString())
                                             .font(.body)
                                             .fontWeight(.medium)
                                             .foregroundColor(Color.primary)
-                                        }
-                                        .cornerRadius(8)
                                     }
                                     .frame(maxWidth: .infinity)
                                 }
@@ -61,13 +58,17 @@ struct HomepageView: View {
 
                         // Scrollable section for workouts
                         ScrollViewWrapper(itemCount: workoutDataManager.workouts.count) {
-
-                            ForEach(workoutDataManager.workouts, id: \.workout.uuid) { workoutData in
-                                NavigationLink(destination: LiftView(workoutData: Binding(
-                                    get: { workoutData },
-                                    set: { workoutDataManager.workouts[workoutDataManager.workouts.firstIndex(where: { $0.workout == workoutData.workout })!] = $0 }
-                                ))) {
-                                    WorkoutView(workoutData: workoutData)
+                            if workoutDataManager.workouts.isEmpty {
+                                Text("No workouts recorded yet")
+                                    .bold()
+                            } else {
+                                ForEach(workoutDataManager.workouts, id: \.workout.uuid) { workoutData in
+                                    NavigationLink(destination: LiftView(workoutData: Binding(
+                                        get: { workoutData },
+                                        set: { workoutDataManager.workouts[workoutDataManager.workouts.firstIndex(where: { $0.workout == workoutData.workout })!] = $0 }
+                                    ))) {
+                                        WorkoutView(workoutData: workoutData)
+                                    }
                                 }
                             }
                         }
@@ -117,9 +118,15 @@ struct HomepageView: View {
 
                         // Scrollable section for splits
                         ScrollViewWrapper(itemCount: splitManager.splits.count) {
-                            ForEach(splitManager.sortedSplitsByLastModifiedDate(), id: \.self) { splitName in
-                                NavigationLink(destination: SplitView(splitName: splitName, workouts: splitManager.splits[splitName] ?? [])) {
-                                    SplitHomeView(workoutData: splitName)
+                            if splitManager.splits.isEmpty {
+                                Text("No splits created yet")
+                                    .bold()
+                            } else {
+                                
+                                ForEach(splitManager.sortedSplitsByLastModifiedDate(), id: \.self) { splitName in
+                                    NavigationLink(destination: SplitView(splitName: splitName, workouts: splitManager.splits[splitName] ?? [])) {
+                                        SplitHomeView(workoutData: splitName)
+                                    }
                                 }
                             }
                         }
@@ -158,6 +165,37 @@ struct HomepageView: View {
             .font(.largeTitle)
             .fontWeight(.semibold)
             .multilineTextAlignment(.leading)
+    }
+    
+    func buildAttributedString() -> AttributedString {
+        var attributedString = AttributedString("Start by pressing ")
+        attributedString.font = .body
+        
+        var plus = AttributedString("+")
+        plus.font = .body.bold()
+        attributedString.append(plus)
+        
+        var nextTo = AttributedString(" next to ")
+        nextTo.font = .body
+        attributedString.append(nextTo)
+        
+        var splits = AttributedString("Splits ")
+        splits.font = .body.bold()
+        attributedString.append(splits)
+        
+        var instructions = AttributedString("to create a new workout split. When you record workouts on your Apple Watch, those workouts will show up below Recent Workouts and you can categorize those workouts based into the splits that you created. If you record workouts on your Watch and they don't show up here, go to ")
+        instructions.font = .body
+        attributedString.append(instructions)
+        
+        var settings = AttributedString("Settings -> Health -> Data Access & Devices -> LiftAnalyzer ")
+        settings.font = .body.bold()
+        attributedString.append(settings)
+        
+        var enableAll = AttributedString("and enable all.")
+        enableAll.font = .body
+        attributedString.append(enableAll)
+        
+        return attributedString
     }
 
 }

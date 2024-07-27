@@ -74,7 +74,7 @@ class WorkoutDataManager: ObservableObject {
 
     private func fetchWorkouts() {
         // Replace 'functionalStrengthTraining' with the appropriate type if available
-        let workoutPredicate = HKQuery.predicateForWorkouts(with: .traditionalStrengthTraining)
+        let workoutPredicate = HKQuery.predicateForWorkouts(with: .greaterThanOrEqualTo, duration: 0)
 
         let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)
 

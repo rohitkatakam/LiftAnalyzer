@@ -209,7 +209,7 @@ struct SplitView: View {
                         }
                     }
                     else {
-                        Text("Edit the split on a lift page so it shows up here!")
+                        Text("You have no workouts associated with this split yet!")
                             .font(.body)
                             .fontWeight(.semibold)
                     }
