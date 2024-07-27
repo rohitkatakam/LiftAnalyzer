@@ -59,7 +59,7 @@ struct HomepageView: View {
                         // Scrollable section for workouts
                         ScrollViewWrapper(itemCount: workoutDataManager.workouts.count) {
                             if workoutDataManager.workouts.isEmpty {
-                                Text("No workouts recorded yet")
+                                Text("No workouts recorded yet!")
                                     .bold()
                             } else {
                                 ForEach(workoutDataManager.workouts, id: \.workout.uuid) { workoutData in
@@ -119,7 +119,7 @@ struct HomepageView: View {
                         // Scrollable section for splits
                         ScrollViewWrapper(itemCount: splitManager.splits.count) {
                             if splitManager.splits.isEmpty {
-                                Text("No splits created yet")
+                                Text("No splits created yet!")
                                     .bold()
                             } else {
                                 
