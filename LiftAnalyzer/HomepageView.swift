@@ -54,6 +54,12 @@ struct HomepageView: View {
                                     .foregroundStyle(.gray)
                                     .padding(.top,8)
                             }
+                            Spacer()
+                            NavigationLink(destination: SettingsView()) {
+                                Image(systemName: "gear")
+                                    .foregroundStyle(.gray)
+                                    .padding(.top, 8)
+                            }
                         }
 
                         // Scrollable section for workouts
@@ -102,7 +108,7 @@ struct HomepageView: View {
                                             .background(Color.gray)
                                             .foregroundStyle(Color.primary)
                                             .cornerRadius(8)
-                                        Button("Add Split") {
+                                        Button("Add") {
                                             addSplit()
                                             popupManager.dismissPopup()
                                         }

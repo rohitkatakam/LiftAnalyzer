@@ -12,11 +12,10 @@ struct SplitView: View {
     @EnvironmentObject var splitManager: SplitManager
     @EnvironmentObject var popupManager: PopupManager
     @EnvironmentObject var workoutDataManager: WorkoutDataManager
+    @StateObject private var settingsManager = SettingsManager()
     var splitName: String
     var workouts: [StoredWorkout]
-    @State private var selectedStartDate: Date = Calendar.current.date(byAdding: .month, value: -1, to: Date()) ?? Date()
-    //@State private var selectedTimeframe = "one month"
-    //private let timeframes = ["one week", "one month", "three months", "six months", "one year", "all time"]
+    @State private var selectedStartDate: Date = Date()
     @State private var showingDeleteAlert = false
     @State private var predictedStats: [String: Double] = [:]
     
@@ -24,7 +23,6 @@ struct SplitView: View {
     private var filteredWorkouts: [StoredWorkout] {
         workouts.filter { $0.startDate >= selectedStartDate && $0.startDate <= Date() }
     }
-
 
     // Calculate average duration
     private func averageDuration() -> TimeInterval {
@@ -166,6 +164,9 @@ struct SplitView: View {
                             }
                             .padding(.top, 2)
                         }
+                        .onAppear {
+                            selectedStartDate = settingsManager.getDefaultStartDate()
+                        }
                         
                         VStack(alignment: .leading, spacing: 10) {
                             Text("AI Benchmarks for Next Workout")
@@ -255,18 +256,4 @@ private struct InfoSquare: View {
     }
 }
 
-struct SplitView_Previews : PreviewProvider {
-    static let mockStoredWorkout = StoredWorkout(
-        startDate: Date(),
-        duration: 3600, // For example, 1 hour
-        totalEnergyBurned: 500, // Example value
-        totalDistance: 1000, // Example value in meters
-        averageHeartRate: 120, // Example average heart rate
-        percentInZone: 0.5
-    )
-    
-    static var previews: some View {
-        SplitView(splitName: "Example", workouts: [mockStoredWorkout])
-    }
-}
 

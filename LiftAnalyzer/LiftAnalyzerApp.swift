@@ -14,6 +14,7 @@ struct LiftAnalyzerApp: App {
     var splitManager = SplitManager()
     var workoutDataManager: WorkoutDataManager
     var popupManager = PopupManager()
+    var settingsManager = SettingsManager()
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
@@ -28,6 +29,7 @@ struct LiftAnalyzerApp: App {
                 .environmentObject(splitManager)
                 .environmentObject(workoutDataManager)
                 .environmentObject(popupManager)
+                .environmentObject(settingsManager)
                 .onAppear {
                     if !hasSeenTutorial {
                         showTutorialPopup()

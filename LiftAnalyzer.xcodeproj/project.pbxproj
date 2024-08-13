@@ -16,6 +16,8 @@
 		324F8B1B2B2B0EC000701E40 /* LiftAnalyzerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324F8B1A2B2B0EC000701E40 /* LiftAnalyzerTests.swift */; };
 		324F8B252B2B0EC000701E40 /* LiftAnalyzerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324F8B242B2B0EC000701E40 /* LiftAnalyzerUITests.swift */; };
 		324F8B272B2B0EC000701E40 /* LiftAnalyzerUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324F8B262B2B0EC000701E40 /* LiftAnalyzerUITestsLaunchTests.swift */; };
+		32617D552C6BDD1E00DE9391 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32617D542C6BDD1D00DE9391 /* SettingsView.swift */; };
+		32617D572C6BE43300DE9391 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32617D562C6BE43300DE9391 /* SettingsManager.swift */; };
 		3296C8B72C2DEEE800C6C28A /* TestTrain.csv in Resources */ = {isa = PBXBuildFile; fileRef = 3296C8B62C2DEEE800C6C28A /* TestTrain.csv */; };
 		3296C8B82C2DEEE800C6C28A /* TestTrain.csv in Resources */ = {isa = PBXBuildFile; fileRef = 3296C8B62C2DEEE800C6C28A /* TestTrain.csv */; };
 		3296C8B92C2DEEE800C6C28A /* TestTrain.csv in Resources */ = {isa = PBXBuildFile; fileRef = 3296C8B62C2DEEE800C6C28A /* TestTrain.csv */; };
@@ -61,6 +63,8 @@
 		324F8B242B2B0EC000701E40 /* LiftAnalyzerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiftAnalyzerUITests.swift; sourceTree = "<group>"; };
 		324F8B262B2B0EC000701E40 /* LiftAnalyzerUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiftAnalyzerUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		324F8B332B2B113700701E40 /* LiftAnalyzer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LiftAnalyzer.entitlements; sourceTree = "<group>"; };
+		32617D542C6BDD1D00DE9391 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		32617D562C6BE43300DE9391 /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
 		3296C8B62C2DEEE800C6C28A /* TestTrain.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TestTrain.csv; sourceTree = "<group>"; };
 		329874062C248CE500CA1259 /* SplitClassifier.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = SplitClassifier.mlmodel; sourceTree = "<group>"; };
 		329874072C248CE500CA1259 /* SplitClassifier.mlproj */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SplitClassifier.mlproj; sourceTree = "<group>"; };
@@ -126,6 +130,8 @@
 				32A093372B3052F70014BAEE /* Info.plist */,
 				3298740F2C24CA4D00CA1259 /* Training.csv */,
 				324F8B332B2B113700701E40 /* LiftAnalyzer.entitlements */,
+				32617D542C6BDD1D00DE9391 /* SettingsView.swift */,
+				32617D562C6BE43300DE9391 /* SettingsManager.swift */,
 				324F8B092B2B0EBE00701E40 /* LiftAnalyzerApp.swift */,
 				324F8B0B2B2B0EBE00701E40 /* HomepageView.swift */,
 				32A0932F2B301DF50014BAEE /* LiftView.swift */,
@@ -313,6 +319,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				32A093362B304DC20014BAEE /* WorkoutDataManager.swift in Sources */,
+				32617D572C6BE43300DE9391 /* SettingsManager.swift in Sources */,
 				324F8B0C2B2B0EBE00701E40 /* HomepageView.swift in Sources */,
 				32EB6EB92B75B1990092BF77 /* PopupManager.swift in Sources */,
 				32A093322B301FDA0014BAEE /* SplitView.swift in Sources */,
@@ -321,6 +328,7 @@
 				32A093302B301DF50014BAEE /* LiftView.swift in Sources */,
 				32A093412B31A2330014BAEE /* SplitDropDownMenu.swift in Sources */,
 				329874082C248CE500CA1259 /* SplitClassifier.mlmodel in Sources */,
+				32617D552C6BDD1E00DE9391 /* SettingsView.swift in Sources */,
 				321816602C6AB55100C299D9 /* AppDelegate.swift in Sources */,
 				324F8B0A2B2B0EBE00701E40 /* LiftAnalyzerApp.swift in Sources */,
 			);
