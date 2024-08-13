@@ -14,9 +14,12 @@ struct LiftAnalyzerApp: App {
     var splitManager = SplitManager()
     var workoutDataManager: WorkoutDataManager
     var popupManager = PopupManager()
+    
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     init() {
         workoutDataManager = WorkoutDataManager(splitManager: splitManager)
+        appDelegate.workoutDataManager = workoutDataManager
     }
 
     var body: some Scene {
@@ -31,8 +34,19 @@ struct LiftAnalyzerApp: App {
                         hasSeenTutorial = true
                     }
                 }
+                .onOpenURL { url in
+                    handleDeepLink(url: url)
+                }
         }
     }
+    
+    private func handleDeepLink(url: URL) {
+        guard let workoutID = url.host else { return }
+                if let workoutData = workoutDataManager.workouts.first(where: { $0.workout.uuid.uuidString == workoutID }) {
+                    workoutDataManager.selectedWorkout = workoutData
+                }
+        }
+    
     private func showTutorialPopup() {
         DispatchQueue.main.async {
             let popupView = PopupView {

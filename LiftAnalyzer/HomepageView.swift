@@ -72,6 +72,21 @@ struct HomepageView: View {
                                 }
                             }
                         }
+                        .onAppear {
+                            if let selectedWorkout = workoutDataManager.selectedWorkout {
+                                // Navigate to LiftView for the selected workout
+                                workoutDataManager.selectedWorkout = nil
+                                let liftView = LiftView(workoutData: Binding(
+                                    get: { selectedWorkout },
+                                    set: { workoutDataManager.workouts[workoutDataManager.workouts.firstIndex(where: { $0.workout == selectedWorkout.workout })!] = $0 }
+                                ))
+                                let hostingController = UIHostingController(rootView: liftView)
+                                if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                                   let rootViewController = windowScene.windows.first?.rootViewController {
+                                    rootViewController.present(hostingController, animated: true, completion: nil)
+                                }
+                            }
+                        }
 
                         HStack(spacing: 2) {
                             sectionHeader("Splits")

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		321816602C6AB55100C299D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3218165F2C6AB55100C299D9 /* AppDelegate.swift */; };
 		324BB4342B54F8F900C8DB01 /* AddSplitAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324BB4332B54F8F900C8DB01 /* AddSplitAlert.swift */; };
 		324F8B0A2B2B0EBE00701E40 /* LiftAnalyzerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324F8B092B2B0EBE00701E40 /* LiftAnalyzerApp.swift */; };
 		324F8B0C2B2B0EBE00701E40 /* HomepageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324F8B0B2B2B0EBE00701E40 /* HomepageView.swift */; };
@@ -47,6 +48,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3218165F2C6AB55100C299D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		324BB4332B54F8F900C8DB01 /* AddSplitAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddSplitAlert.swift; sourceTree = "<group>"; };
 		324F8B062B2B0EBE00701E40 /* LiftAnalyzer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiftAnalyzer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		324F8B092B2B0EBE00701E40 /* LiftAnalyzerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiftAnalyzerApp.swift; sourceTree = "<group>"; };
@@ -130,6 +132,7 @@
 				32A093312B301FDA0014BAEE /* SplitView.swift */,
 				329874062C248CE500CA1259 /* SplitClassifier.mlmodel */,
 				329874072C248CE500CA1259 /* SplitClassifier.mlproj */,
+				3218165F2C6AB55100C299D9 /* AppDelegate.swift */,
 				324BB4332B54F8F900C8DB01 /* AddSplitAlert.swift */,
 				32A0933C2B3172400014BAEE /* SplitManager.swift */,
 				32EB6EB82B75B1990092BF77 /* PopupManager.swift */,
@@ -318,6 +321,7 @@
 				32A093302B301DF50014BAEE /* LiftView.swift in Sources */,
 				32A093412B31A2330014BAEE /* SplitDropDownMenu.swift in Sources */,
 				329874082C248CE500CA1259 /* SplitClassifier.mlmodel in Sources */,
+				321816602C6AB55100C299D9 /* AppDelegate.swift in Sources */,
 				324F8B0A2B2B0EBE00701E40 /* LiftAnalyzerApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

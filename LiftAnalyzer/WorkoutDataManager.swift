@@ -8,6 +8,9 @@
 import HealthKit
 import Combine
 import SwiftUI
+import UserNotifications
+import UIKit
+import BackgroundTasks 
 
 struct WorkoutData {
     var split : String?
@@ -31,7 +34,10 @@ class WorkoutDataManager: ObservableObject {
     private var healthStore: HKHealthStore?
     private var splitManager: SplitManager?
     @Published var workouts: [WorkoutData] = []
+    @Published var selectedWorkout: WorkoutData?
 
+    private var lastFetchDate: Date?
+    private var lastNotificationWorkoutID: UUID?
     private var cancellables = Set<AnyCancellable>()
     
     init(splitManager: SplitManager) {
@@ -42,12 +48,15 @@ class WorkoutDataManager: ObservableObject {
             requestAuthorization()
         }
         setupAppLifecycleObserver()
+        requestNotificationAuthorization()
     }
     
     private func setupAppLifecycleObserver() {
         NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
             .sink { [weak self] _ in
-                self?.fetchWorkouts()
+                self?.fetchWorkouts {
+                    print("fetched workouts successfully")
+                }
             }
             .store(in: &cancellables)
     }
@@ -63,32 +72,80 @@ class WorkoutDataManager: ObservableObject {
 
         healthStore?.requestAuthorization(toShare: nil, read: typesToRead) { success, error in
             if success {
-                self.fetchWorkouts()
+                self.fetchWorkouts {
+                    print("requested success")
+                }
             } else {
                 // Handle errors
                 print("Authorization failed with error: \(error?.localizedDescription ?? "Unknown error")")
             }
         }
     }
-
-
-    private func fetchWorkouts() {
-        // Replace 'functionalStrengthTraining' with the appropriate type if available
-        let workoutPredicate = HKQuery.predicateForWorkouts(with: .greaterThanOrEqualTo, duration: 0)
-
-        let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)
-
-        let query = HKSampleQuery(sampleType: HKObjectType.workoutType(), predicate: workoutPredicate, limit: HKObjectQueryNoLimit, sortDescriptors: [sortDescriptor]) { [weak self] (query, samples, error) in
-            DispatchQueue.main.async {
-                guard let self = self else { return }
-                if let fetchedWorkouts = samples as? [HKWorkout] {
-                    self.workouts = fetchedWorkouts.map { WorkoutData(split: nil, workout: $0) }
-                    if let splitManager = self.splitManager {
-                        self.updateWorkoutSplits(from: splitManager)
-                    }
-                }
+    
+    func requestNotificationAuthorization() {
+        let center = UNUserNotificationCenter.current()
+        center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            if let error = error {
+                print("Error requesting notification authorization: \(error)")
             }
         }
+    }
+        
+    func sendNewWorkoutNotification(with workoutID: UUID) {
+        guard lastNotificationWorkoutID != workoutID else {
+                // Prevent sending a notification if it's for the same workout as the last one.
+                return
+            }
+            
+        lastNotificationWorkoutID = workoutID
+        let content = UNMutableNotificationContent()
+        content.title = "New Workout Recorded"
+        content.body = "A new workout has been recorded. Check it out in the app!"
+        content.sound = .default
+        content.userInfo = ["workoutID": workoutID.uuidString]
+
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+
+        let center = UNUserNotificationCenter.current()
+        center.add(request) { error in
+            if let error = error {
+                print("Error adding notification request: \(error)")
+            }
+        }
+    }
+
+    func handleNewWorkout() {
+        // Fetch the most recent workout or handle the new workout detection
+        if let mostRecentWorkout = workouts.first {
+            sendNewWorkoutNotification(with: mostRecentWorkout.workout.uuid)
+        }
+    }
+
+
+    func fetchWorkouts(completion: @escaping () -> Void) {
+        let workoutPredicate: NSPredicate
+            if let lastFetchDate = lastFetchDate {
+                workoutPredicate = HKQuery.predicateForWorkouts(with: .greaterThanOrEqualTo, duration: 0)
+            } else {
+                workoutPredicate = HKQuery.predicateForWorkouts(with: .greaterThanOrEqualTo, duration: 0)
+            }
+
+            let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)
+
+            let query = HKSampleQuery(sampleType: HKObjectType.workoutType(), predicate: workoutPredicate, limit: HKObjectQueryNoLimit, sortDescriptors: [sortDescriptor]) { [weak self] (query, samples, error) in
+                DispatchQueue.main.async {
+                    guard let self = self else { return }
+                    if let fetchedWorkouts = samples as? [HKWorkout] {
+                        self.workouts = fetchedWorkouts.map { WorkoutData(split: nil, workout: $0) }
+                        if let splitManager = self.splitManager {
+                            self.updateWorkoutSplits(from: splitManager)
+                        }
+                        self.handleNewWorkout()
+                        self.lastFetchDate = Date()
+                    }
+                    completion()
+                }
+            }
 
         healthStore?.execute(query)
     }
@@ -173,7 +230,36 @@ class WorkoutDataManager: ObservableObject {
         }
     }
     
+    func startWorkoutObserver() {
+        let workoutType = HKObjectType.workoutType()
 
+        let query = HKObserverQuery(sampleType: workoutType, predicate: nil) { [weak self] (query, completionHandler, error) in
+            if let error = error {
+                print("Error in observer query: \(error.localizedDescription)")
+                return
+            }
+
+            // Fetch the latest workouts
+            self?.fetchWorkouts {
+                // Handle new workout
+                self?.handleNewWorkout()
+            }
+
+            // Call the completion handler
+            completionHandler()
+        }
+
+        healthStore?.execute(query)
+
+        // Enable background delivery for the workout type
+        healthStore?.enableBackgroundDelivery(for: workoutType, frequency: .immediate) { (success, error) in
+            if success {
+                print("Enabled background delivery for workouts")
+            } else if let error = error {
+                print("Failed to enable background delivery: \(error.localizedDescription)")
+            }
+        }
+    }
 
 
     deinit {
