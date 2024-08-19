@@ -190,8 +190,10 @@ struct SplitView: View {
                             }
                         }
                         .padding(.top, 10)
+                        
+                        WorkoutProgressGraph(filteredWorkouts: filteredWorkouts)
 
-                        Text("All Lifts")
+                        Text("All Workouts")
                             .font(.body)
                             .fontWeight(.semibold)
                             .padding([.top])
@@ -256,4 +258,143 @@ private struct InfoSquare: View {
     }
 }
 
+enum WorkoutMetric: String, CaseIterable {
+    case duration = "Duration"
+    case averageHeartRate = "Heart Rate"
+    case totalEnergyBurned = "Calories"
+    case percentInZone = "% in Zone"
+}
 
+struct WorkoutProgressGraph: View {
+    var filteredWorkouts: [StoredWorkout]
+    @State private var selectedMetric: WorkoutMetric = .duration
+    
+    var body: some View {
+        VStack {
+            // Toggle between different metrics
+            HStack {
+                Text("Workout Progress")
+                    .font(.body)
+                    .fontWeight(.semibold)
+                Spacer()
+            }
+            
+            Picker("Select Metric", selection: $selectedMetric) {
+                ForEach(WorkoutMetric.allCases, id: \.self) { metric in
+                    Text(metric.rawValue).tag(metric)
+                }
+            }
+            .pickerStyle(SegmentedPickerStyle())
+            
+            // Display the graph based on the selected metric
+            GeometryReader { geometry in
+                HStack(spacing: 0) {
+                    // Draw the Y-axis with tick marks and labels
+                    ZStack {
+                        ForEach(0..<6) { i in
+                            let yPosition = geometry.size.height * CGFloat(Double(i) / 5)
+                            HStack {
+                                Text("\(formatYAxisValue(i: i, metric: selectedMetric))")
+                                    .font(.caption)
+                                    .frame(width: 40, alignment: .trailing)
+                                    .foregroundStyle(.gray)
+                                Rectangle().fill(Color.gray).frame(width: 10, height: 2)
+                            }
+                            .position(x: 5, y: yPosition) // Adjust x to align with axis
+                        }
+                    }
+                    .frame(width: 40)
+                    // Add padding to avoid overlap
+                    
+                    // Draw the graph
+                    ZStack {
+                        // Draw the line connecting the data points
+                        Path { path in
+                            for index in filteredWorkouts.indices {
+                                let xPosition = (geometry.size.width - 80) * CGFloat(index) / CGFloat(filteredWorkouts.count - 1) - 30
+                                let yValue = valueForMetric(filteredWorkouts[index], metric: selectedMetric)
+                                let yPosition = geometry.size.height * CGFloat(1 - yValue / maxYValue(for: selectedMetric))
+                                
+                                if index == 0 {
+                                    path.move(to: CGPoint(x: xPosition, y: yPosition))
+                                } else {
+                                    path.addLine(to: CGPoint(x: xPosition, y: yPosition))
+                                }
+                            }
+                        }
+                        .stroke(lineColor(for: selectedMetric), lineWidth: 1)
+                        
+                        // Draw the points on the graph
+                        ForEach(filteredWorkouts.indices, id: \.self) { index in
+                            let xPosition = (geometry.size.width - 80) * CGFloat(index) / CGFloat(filteredWorkouts.count - 1) - 30
+                            let yValue = valueForMetric(filteredWorkouts[index], metric: selectedMetric)
+                            let yPosition = geometry.size.height * CGFloat(1 - yValue / maxYValue(for: selectedMetric))
+                            
+                            Circle()
+                                .fill(lineColor(for: selectedMetric))
+                                .frame(width: 4, height: 4)
+                                .position(x: xPosition, y: yPosition)
+                        }
+                    }
+                    .padding(.leading, 40) // Ensure the graph has space for the Y-axis
+                    .padding(.trailing, 20) // Add extra padding on the right to avoid cutoff
+                }
+            }
+            .frame(height: 200)
+            .padding()
+            .background(Color.gray.opacity(0.2))
+            .cornerRadius(10)
+        }
+        .padding(.top)
+    }
+    
+    // Function to get the value for the selected metric
+    private func valueForMetric(_ workout: StoredWorkout, metric: WorkoutMetric) -> Double {
+        switch metric {
+        case .duration:
+            return round(workout.duration / 60) // Convert to minutes and round
+        case .averageHeartRate:
+            return workout.averageHeartRate
+        case .totalEnergyBurned:
+            return workout.totalEnergyBurned
+        case .percentInZone:
+            return workout.percentInZone * 100
+        }
+    }
+    
+    // Function to get the maximum value for the selected metric (for scaling)
+    private func maxYValue(for metric: WorkoutMetric) -> Double {
+        switch metric {
+        case .duration:
+            return round(filteredWorkouts.map { $0.duration / 60 }.max() ?? 1) // Max value in minutes
+        case .averageHeartRate:
+            return filteredWorkouts.map { $0.averageHeartRate }.max() ?? 1 // Assuming heart rate max is 200 bpm
+        case .totalEnergyBurned:
+            return filteredWorkouts.map { $0.totalEnergyBurned }.max() ?? 1
+        case .percentInZone:
+            return 100
+        }
+    }
+    
+    // Function to format the Y-axis value based on the metric
+    private func formatYAxisValue(i: Int, metric: WorkoutMetric) -> String {
+        let max = maxYValue(for: metric)
+        let step = max / 5
+        let value = step * Double(5 - i)
+        return "\(Int(value))"
+    }
+    
+    // Function to get the line and dot color for the selected metric
+    private func lineColor(for metric: WorkoutMetric) -> Color {
+        switch metric {
+        case .duration:
+            return .red
+        case .averageHeartRate:
+            return .orange
+        case .totalEnergyBurned:
+            return .indigo
+        case .percentInZone:
+            return .teal
+        }
+    }
+}
